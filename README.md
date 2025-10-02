@@ -1,24 +1,29 @@
-# Logistics  
+# Logistics
 
 **Q1:** At what time in the week would your group be available to meet online?  
 **Example:**  
+<<<<<<< HEAD
 *We are available to meet online on weekends from 12pm-8pm (12-2pm Saturday + Sunday), as well as from 4pm-6pm on Fridays.*  
 *Our weekly meeting will be Thursday 11am-12pm.* 
 
 Answer:
 We are available to meet online on any time of the week from 3pm-10pm. Moreover, we are also available to meet in person from 3pm-5pm on any time of the week
+=======
+_We are available to meet online on weekends from 12pm-8pm (12-2pm Saturday + Sunday), as well as from 4pm-6pm on Fridays._  
+_Our weekly meeting will be Thursday 11am-12pm._
+>>>>>>> adi_branch
 
 ---
 
-# Timeline: Weekly Meeting Goals  
+# Timeline: Weekly Meeting Goals
 
 **Q2:** What is your goals that your group want to achieve in each weekly meeting?  
 **Example:**  
-*Prior to 3/13: Weekly Meeting we will plan out some preliminary info/idea for the project itself ahead of the scheduled meeting like which data source/API and data structures we will use in our backend. We will browse [the given list of public APIs for inspiration](https://github.com/public-apis/public-apis).*  
+_Prior to 3/13: Weekly Meeting we will plan out some preliminary info/idea for the project itself ahead of the scheduled meeting like which data source/API and data structures we will use in our backend. We will browse [the given list of public APIs for inspiration](https://github.com/public-apis/public-apis)._
 
-*During week of 3/25: Work on the project rough draft itself to make a functioning project with data input, data structure usage, and processing into output on the frontend.*  
+_During week of 3/25: Work on the project rough draft itself to make a functioning project with data input, data structure usage, and processing into output on the frontend._
 
-*Prior to 4/17: Meet together weekly to target project weakpoints/bugs and possibly visit office hours to get guidance if the progress feels weak.*  
+_Prior to 4/17: Meet together weekly to target project weakpoints/bugs and possibly visit office hours to get guidance if the progress feels weak._
 
 
 Week 10/07 - Week 10/23: In these weeks we will plan out the implementation for the project and what data structures we will use for the project. Furthermore, we will discuss what roles each member will take for the project and start coding based on the roles assigned to each member of the group
@@ -29,20 +34,20 @@ Prior to Week 12/01: Finalize and complete our project and prepare for the prese
 
 ---
 
-# Communication  
+# Communication
 
 **Q3a:** How can your group communicate when doing the Full Stack Group Project?  
 **Q3b:** What are the usernames of each group member on that platform?  
-**Q3c:** What is your group’s expected response time to messages?  
+**Q3c:** What is your group’s expected response time to messages?
 
 **Example:**  
-*We will use Discord for communication*  
+_We will use Discord for communication_
 
-*Usernames:*  
-*Justin - ghostmechanic*  
-*Claudia - ninth.py*  
-*Mauricio - itsperi*  
-*Our expected response time will be within 12 hours.*  
+_Usernames:_  
+_Justin - ghostmechanic_  
+_Claudia - ninth.py_  
+_Mauricio - itsperi_  
+_Our expected response time will be within 12 hours._
 
 We will be using Discord for communication
 
@@ -55,24 +60,24 @@ Our expected response time will be within 24 hours.
 
 ---
 
-# Norms  
+# Norms
 
 **Q4a:** How will your group handle situations when there is conflict in your group?  
-**Q4b:** How will your group handle situations when a member is not contributing enough?  
+**Q4b:** How will your group handle situations when a member is not contributing enough?
 
-**Example:**  
-*If there is a disagreement on direction, we will resolve it with a unanimous vote.*  
-*If team members do not pull their weight, the team will politely remind them of their duties.*  
-*If they continue to not pull their weight, then they will get another warning and a chance to start being more productive.*  
+_For all cases where we are in conflict of opinions or actions, we as a group will come together in a meeting ad
+decide standards on how things should be done._
+_For cases where we can not come to an agreement, we will take a vote_
+_If a group member is contributing less than required or continously not pulling their weight, they will be asked in our grouply meetings to do their part and provide us with information on any issues they might be having so we can do our best to help._
+_If the behaviour continues, the rest of the group will try to come up with an unanimous decision to move forward._
 
 ---
 
-# Roles  
+# Roles
 
-**Q5:** How will your group divide your role in the Group Project?  
+**Q5:** How will your group divide your role in the Group Project?
 
-**Example:**  
-*Mauricio - Backend, Justin - Project Lead, Claudia - Frontend.*  
+_Niharika - Frontend, Lakshmi - Backend, Kavya - Database Integration + Storylining, Adithya - UX Design + Database help_
 
 ---
 
@@ -80,26 +85,29 @@ Our expected response time will be within 24 hours.
 
 **Q6:** Which tech stacks will your group use? (Django + React or Flask + React)
 
----
-# Full Stack Group Project Track  
+## _Django + React_
+
+# Full Stack Group Project Track
+
 ---
 
 # Track 1: Tackling Generative AI Consequences
-**Problem 1:** 
 
-**Solution 1:** 
+**Problem 1:**
+
+**Solution 1:**
 
 ---
 
-# Track 2: Technology for Public Goods 
+# Track 2: Technology for Public Goods
 
 **Problem 2:**
 
-**Solution 2:** 
+**Solution 2:**
 
-**Problem 3:** 
+**Problem 3:**
 
-**Solution 3:**  
+**Solution 3:**
 
 # Track 3: Creative Coding and Cultural Expression
 
@@ -110,7 +118,6 @@ Our expected response time will be within 24 hours.
 **Idea - Story - Inspiration 5:**
 
 **Implementation 5:**
-
 
 # Idea Finalization
 
