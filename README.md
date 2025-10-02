@@ -2,16 +2,11 @@
 
 **Q1:** At what time in the week would your group be available to meet online?  
 **Example:**  
-<<<<<<< HEAD
 *We are available to meet online on weekends from 12pm-8pm (12-2pm Saturday + Sunday), as well as from 4pm-6pm on Fridays.*  
 *Our weekly meeting will be Thursday 11am-12pm.* 
 
 Answer:
 We are available to meet online on any time of the week from 3pm-10pm. Moreover, we are also available to meet in person from 3pm-5pm on any time of the week
-=======
-_We are available to meet online on weekends from 12pm-8pm (12-2pm Saturday + Sunday), as well as from 4pm-6pm on Fridays._  
-_Our weekly meeting will be Thursday 11am-12pm._
->>>>>>> adi_branch
 
 ---
 
@@ -85,7 +80,7 @@ _Niharika - Frontend, Lakshmi - Backend, Kavya - Database Integration + Storylin
 
 **Q6:** Which tech stacks will your group use? (Django + React or Flask + React)
 
-## _Django + React_
+_Django + React_
 
 # Full Stack Group Project Track
 
@@ -102,8 +97,11 @@ _Niharika - Frontend, Lakshmi - Backend, Kavya - Database Integration + Storylin
 # Track 2: Technology for Public Goods
 
 **Problem 2:**
+    Many local community volunteers struggle to find nearby opportunities to help out, coordinate with other volunteers, or learn about upcoming events. This makes it harder for people to get involved and have a meaningful impact in their community.
+
 
 **Solution 2:**
+    A practical project is to build a simple app that connects volunteers with local opportunities. Users could create profiles, browse events based on interests or location, sign up for activities, and communicate with other volunteers. Features could include event notifications, messaging, and a calendar. This project helps build community engagement, makes volunteering more accessible, and is easy to implement using web or mobile technologies.
 
 **Problem 3:**
 
@@ -113,7 +111,11 @@ _Niharika - Frontend, Lakshmi - Backend, Kavya - Database Integration + Storylin
 
 **Idea - Story - Inspiration 4:**
 
+    This idea is inspired by one of our teammates dream where she time traveled back into the 1980's India where she got to explore the cultural environment and social norms where at one point she finds a younger version of her mother. We are implementing a storyline based application/game that accurately captures retro India and its political landscape, ethnic cuisine, entertainment, and navigates life post-British rule.
+
 **Implementation 4:**
+
+    Develop a web or mobile app that establishes a protagonist/user, and allows said user to choose a range of time periods post-British rule (1950 - onwards). Features could include mini games throughout the time period that educate player/user on the history of that specific time period. Gamification can be implemented through a score system that rewards players based on the choices they make.
 
 **Idea - Story - Inspiration 5:**
 
