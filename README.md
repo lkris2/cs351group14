@@ -3,7 +3,10 @@
 **Q1:** At what time in the week would your group be available to meet online?  
 **Example:**  
 *We are available to meet online on weekends from 12pm-8pm (12-2pm Saturday + Sunday), as well as from 4pm-6pm on Fridays.*  
-*Our weekly meeting will be Thursday 11am-12pm.*  
+*Our weekly meeting will be Thursday 11am-12pm.* 
+
+Answer:
+We are available to meet online on any time of the week from 3pm-10pm. Moreover, we are also available to meet in person from 3pm-5pm on any time of the week
 
 ---
 
@@ -16,6 +19,13 @@
 *During week of 3/25: Work on the project rough draft itself to make a functioning project with data input, data structure usage, and processing into output on the frontend.*  
 
 *Prior to 4/17: Meet together weekly to target project weakpoints/bugs and possibly visit office hours to get guidance if the progress feels weak.*  
+
+
+Week 10/07 - Week 10/23: In these weeks we will plan out the implementation for the project and what data structures we will use for the project. Furthermore, we will discuss what roles each member will take for the project and start coding based on the roles assigned to each member of the group
+
+Week 11/4 - Week 11/20: In these weeks we will come together to check our implementation and where each memeber is in terms of completing the project and help each other on the problem we might be facing.
+
+Prior to Week 12/01: Finalize and complete our project and prepare for the presentation.
 
 ---
 
@@ -33,6 +43,15 @@
 *Claudia - ninth.py*  
 *Mauricio - itsperi*  
 *Our expected response time will be within 12 hours.*  
+
+We will be using Discord for communication
+
+Username:
+Kavyasri Challa - kavya0196
+Adithya Prasad  - adi2562
+Niharika Patil  - _niharikapatil_
+Lakshmi Krishan - hellomellow0471
+Our expected response time will be within 24 hours.
 
 ---
 
