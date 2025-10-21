@@ -124,29 +124,38 @@ _Django + React_
 # Idea Finalization
 
 **From 5 project ideas you have above, please choose one of the project that you are going with for the rest of the semester. Explain why you are going with that project**
+Track 3 is the most preferred project the group has agreed upon
 
 # Extra Credit (Only do this if you are done with Idea Finalization)
 
 ## Database Design
 
 **Q1: What database are you using for your project (SQLite, PostgreSQL, noSQL, MongoDB,...), and why do you choose it?**
+We will use PostgreSQL because it is reliable, scalable, and supports both structured and semi-structured data needed for our storyline and gameplay features.
 
 **Q2: How will database be helpful to your project? How will you design your database to support your application features?**
+The database will track users, progress, scores, and historical events, designed with relational tables to link time periods, choices, and achievements.
 
 ## Third-Party API Integration
 
 **Q3: Which third-party API(s) will you integrate into your project? What data will you pull from the API(s), and how will you use it in your application?**
+We will integrate APIs to pull historical context, images, and references that accurately represents the cultural and political climate.
 
 **Q4: Does your API key has limitations such as rate limits or downtime? How are you going to deal with that?**
-
+Since the APIs have rate limits, we’ll handle it by caching results locally and falling back on stored content when needed.
 ## Authentication and Security
 
 **Q5: What authentication method will you use (e.g., username/password, OAuth, JWT)?**
+For auth, we’ll use OAuth so we can manage secure sessions across web and mobile.
+
 
 **Q6: How will you store and protect sensitive user data (e.g., passwords, tokens)?**
+Passwords will be hashed with bcrypt, and tokens will be encrypted and stored safely in environment variables.
 
 ## Deployment
 
 **Q7: Where will you deploy your project (e.g., Heroku, AWS, Render)? How will you manage environment variables and secrets during deployment?**
+Deployment will be done on Vercel. We will be carefully handling all the sensitive information without deploying them.
 
 **Q8: How will you ensure your deployment is reliable and easy to update?**
+We’ll keep deployments reliable with Docker.
