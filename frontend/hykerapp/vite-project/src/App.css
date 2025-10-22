@@ -1,0 +1,180 @@
+/* Import 'Just Another Hand' from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap');
+
+:root {
+  --violet: #571235;
+  --overlay-grey: #f0f0f0;
+  --white: #ffffff;
+  --black: #000000;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+.App{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.navbar{
+  background: var(--violet);
+  color: var(--white);
+  width: 100%;
+  box-shadow: 0 2px 4px var(--overlay-grey);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.nav-container{
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+
+.brand{
+  color: var(--white);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.nav-menu{
+  list-style: none;
+  display: flex;
+  gap: 22px; /* good spacing */
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-item a{
+  color: var(--white);
+  text-decoration: none;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Comic Sans */
+  font-size: 1rem;
+  padding: 6px 10px;
+  display: inline-block;
+}
+
+.nav-item a:hover{
+  opacity: 0.9;
+}
+
+/* App header / hero */
+.App-header {
+  height: calc(100vh - 64px);
+  background: var(--overlay-grey);
+  color: var(--white);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.two-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3rem;
+  height: 100%;
+  padding: 2rem 6rem;
+}
+
+.left-col {
+  position: relative;
+  flex: 0 0 550px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.illustration-container {
+  position: relative;
+  width: 550px;
+  height: 550px;
+}
+
+.circle-outer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.circle-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 2%;
+  top: 3%;
+}
+
+.hiker-container {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  left: 45%;
+  top: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hiker-image {
+  width: 55%;
+  height: 55%;
+  margin-right: -15%;
+}
+
+.right-col {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction:right;
+  justify-content: right;
+  align-items: flex-start;
+  padding: 2rem 0;
+}
+
+.hero-title{
+  font-family: 'Just Another Hand', cursive;
+  font-size: 96px; /* requested */
+  line-height: 0.9;
+  margin: 0 0 8px 0;
+  color: #571235; /* fill in 571235 */
+}
+
+.hero-sub{
+  font-family: 'Just Another Hand', cursive;
+  font-size: 20px; /* requested */
+  color: #000000; /* black */
+  white-space: nowrap; /* keep sentence on one line */
+  margin: 0;
+}
+
+.App-logo{
+  height: 120px;
+  pointer-events: none;
+  margin-bottom: 16px;
+}
+
+.subtitle{
+  color: rgba(255,255,255,0.9);
+}
+
+/* Small screens: keep menu compact */
+@media (max-width: 640px){
+  .nav-menu{ gap: 12px; }
+  .App-logo{ height: 80px; }
+
+  /* Allow subtitle to wrap on small screens to avoid overflow */
+  .hero-sub{ white-space: normal; }
+}

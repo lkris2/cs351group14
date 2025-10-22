@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#571235" stroke-width="2">
+    <!-- Body -->
+    <line x1="50" y1="30" x2="50" y2="60"/>
+    <!-- Head -->
+    <circle cx="50" cy="25" r="8"/>
+    <!-- Arms -->
+    <line x1="50" y1="40" x2="35" y2="50"/>
+    <line x1="50" y1="40" x2="65" y2="45"/>
+    <!-- Legs -->
+    <line x1="50" y1="60" x2="40" y2="80"/>
+    <line x1="50" y1="60" x2="60" y2="80"/>
+    <!-- Hat -->
+    <path d="M42 20 H58 M45 20 Q50 15 55 20"/>
+    <!-- Map/Phone -->
+    <rect x="62" y="42" width="6" height="8"/>
+  </g>
+</svg>
