@@ -1,35 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Navbar from "./components/navbar";
+import HykerPerson from "./assets/HykerPerson.svg";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div className='bg-amber-500'>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <Navbar />
+      <div className="bg-[#58062F] w-120 h-120 absolute top-1/2 left-4/16 -translate-x-1/2 -translate-y-7/16 rounded-full"></div>
+        <div className="bg-[#f9f2e8ff] w-120 h-120 absolute top-9/16 left-6/16 -translate-x-1/2 -translate-y-1/2 rounded-full border-10 border-pink-800">
+            <img className="w-110 h-110 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-10 border-pink-800" src={HykerPerson}></img>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <p className="">Hyker</p>
+    </div>
+  );
 }
-
-export default App
