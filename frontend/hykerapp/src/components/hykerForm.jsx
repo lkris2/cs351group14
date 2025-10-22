@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { AiTwotoneEnvironment } from "react-icons/ai";
+import { AiFillCar } from "react-icons/ai";
+import { AiFillClockCircle } from "react-icons/ai";
+
 import InputField from "./inputField.jsx";
-import riderCircle from "./riderCircle.jsx";
+import RiderCircle from "./riderCircle.jsx";
 import { Input } from "postcss";
 
 export default function HykerForm(){
@@ -24,25 +28,26 @@ export default function HykerForm(){
             </div>
             <div className="flex flex-col gap-3">
                 <InputField
-                    icon = ":)"
+                    icon = {<AiFillCar/>}
                     placeholder="Pickup Location"
                     value={pickupLocation}
                     onChange={(e) => setPickupLocation(e.target.value)} />
                 <InputField
-                    icon = ":)"
+                    icon = {<AiTwotoneEnvironment/>}
                     placeholder="Drop-off Location"
                     value={dropoffLocation}
                     onChange={(e) => setDropoffLocation(e.target.value)} />
                 <InputField
-                    icon = ":)"
-                    isSelect={true}
+                    icon = {<AiFillClockCircle/>}
+                    isSelect
                     value = {time}
-                    onChange={(e) => setTime(e.target.value)} />
+                    onChange={(e) => setTime(e.target.value)}
+                    options={["Pickup Now", "Schedule for Later"]} />
                 <button className="bg-pink-500 hover:bg-pink-600 rounded-md py-2 font-semibold">Search</button>
             </div>
             <div className="grid grid-cols-3 gap-4 mt-4">
                 {riders.map((rider, index) => (
-                    <riderCircle key = {index} drivername={rider.drivername} numMiles={rider.numMiles} />
+                    <RiderCircle key = {index} drivername={rider.drivername} numMiles={rider.numMiles} />
                 ))}
             </div>
 
