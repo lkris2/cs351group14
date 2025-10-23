@@ -69,7 +69,7 @@ export class Trie{
             }
         };
 
-        dfs(curr, prefix.toLowerCase());
+        generateList(curr, prefix.toLowerCase());
         return results;
     }
 }
