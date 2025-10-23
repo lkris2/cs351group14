@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 160" width="140" height="160">
+  <!-- simple person placeholder -->
+  <circle cx="70" cy="30" r="18" fill="#f5e0d3" stroke="#000" stroke-width="1" />
+  <path d="M70 48 v36" stroke="#000" stroke-width="2" fill="none" stroke-linecap="round" />
+  <path d="M52 58 h36" stroke="#000" stroke-width="2" stroke-linecap="round" />
+  <path d="M70 84 l-14 28" stroke="#000" stroke-width="2" stroke-linecap="round" />
+  <path d="M70 84 l14 28" stroke="#000" stroke-width="2" stroke-linecap="round" />
+</svg>
