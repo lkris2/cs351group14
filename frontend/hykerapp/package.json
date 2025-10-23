@@ -1,6 +1,5 @@
 {
-  "name": "hykerapp",
-  "version": "0.1.0",
+  "name": "hyker-app",
   "private": true,
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.15",
@@ -18,11 +17,11 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.15",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwindcss": "^4.1.15"
   },
   "browserslist": {
     "production": [
