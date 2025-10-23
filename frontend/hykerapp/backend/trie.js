@@ -62,10 +62,10 @@ export class Trie{
             curr = curr.children[ch];
         }
 
-        const dfs = (node, path) => {
+        const generateList = (node, path) => {
             if (node.isWord) results.push(path);
-            for (const [ch, nextNode] of Object.entries(node.children)) {
-            dfs(nextNode, path + ch);
+                for (const [ch, nextNode] of Object.entries(node.children)) {
+                generateList(nextNode, path + ch);
             }
         };
 
