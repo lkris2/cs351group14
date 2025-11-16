@@ -12,7 +12,7 @@ export default function Navbar(){
                 <a className="hover:underline underline-offset-4 text-lg">See Requests</a>
                 <a className="hover:underline underline-offset-4 text-lg" ><Link to="/RidePage">Ride</Link></a>
                 <a className="hover:underline underline-offset-4 text-lg">About</a>
-                <a className="hover:underline underline-offset-4 text-lg">Login</a>
+                <a className="hover:underline underline-offset-4 text-lg"><Link to="/login">Login</Link></a>
             </div>
         </nav>
     )
