@@ -22,7 +22,7 @@ export default function SignupPage() {
     e.preventDefault();
     try {
       // Send POST request to the backend signup route
-      const res = await axios.post('/api/users/signup', formData); 
+      const res = await axios.post('http://localhost:5000/api/users/signup', formData);
 
       console.log('Sign up successful:', res.data);
       alert('Registration successful! Please log in.');
