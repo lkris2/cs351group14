@@ -26,7 +26,7 @@ export default function HykerForm(){
     ];
 
     return(
-        <div className="bg-[#4B002A] text-white w-[380px] p-6 rounded-2xl flex flex-col gap-6">
+        <div className="bg-[#4B002A] text-white w-[380px] p-6 rounded-3xl shadow-2xl flex flex-col gap-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Hitch a Ride</h2>
             </div>

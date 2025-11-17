@@ -9,10 +9,30 @@ export default function Navbar(){
             </div>
 
             <div className="flex gap-10">
-                <a className="hover:underline underline-offset-4 text-lg">See Requests</a>
-                <a className="hover:underline underline-offset-4 text-lg" ><Link to="/RidePage">Ride</Link></a>
-                <a className="hover:underline underline-offset-4 text-lg">About</a>
-                <a className="hover:underline underline-offset-4 text-lg"><Link to="/login">Login</Link></a>
+                <Link
+                    to="/requests"
+                    className="hover:underline underline-offset-4 text-lg"
+                >
+                    See Requests
+                </Link>
+                <Link
+                    to="/RidePage"
+                    className="hover:underline underline-offset-4 text-lg"
+                >
+                    Ride
+                </Link>
+                <Link
+                    to="/about"
+                    className="hover:underline underline-offset-4 text-lg"
+                >
+                    About
+                </Link>
+                <Link
+                    to="/login"
+                    className="hover:underline underline-offset-4 text-lg"
+                >
+                    Login
+                </Link>
             </div>
         </nav>
     )
