@@ -63,16 +63,18 @@ export default function loginPage(){
                                 Sign in 
                             </button>
                             <h1 className="m-7 text-center">or sign in with your account</h1>
-
-                            <GoogleLogin
-                            onSuccess={(credentialResponse) => {
-                              console.log(credentialResponse)
-                              console.log(jwtDecode(credentialResponse.credential))
-                              navigate("/RidePage")
-                            }} 
-                            onError={() => console.log("Login Failed")}
-                            size="large"
-                            shape="circle"/>
+                            
+                            <div className="flex items-center justify-center scale-125 mb-5">
+                              <GoogleLogin
+                              onSuccess={(credentialResponse) => {
+                                console.log(credentialResponse)
+                                console.log(jwtDecode(credentialResponse.credential))
+                                navigate("/RidePage")
+                              }} 
+                              onError={() => console.log("Login Failed")}
+                              size="large"/>
+                            </div>
+                            
                         </form>
 
                     </div>
