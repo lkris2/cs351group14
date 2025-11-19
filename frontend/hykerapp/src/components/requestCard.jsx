@@ -1,3 +1,5 @@
+import { useNavigate} from "react-router-dom";
+
 export default function requestCard({request}){
     const{
         name,
@@ -9,6 +11,12 @@ export default function requestCard({request}){
         gasPriceShare,
         pickupLocation
     } = request
+
+    const navigate = useNavigate();
+
+    const handleOfferRide = () => {
+        navigate("/ride-confirmation", {state: {request}});
+    };
 
     return (
         <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5 px-5 py-4 flex items-center justify-between gap-4 cursor-pointer">
@@ -37,6 +45,7 @@ export default function requestCard({request}){
                 )}
                 <button
                     type = "button"
+                    onClick = {handleOfferRide}
                     className="px-4 py-1.5 rounded-full bg-[#ff3ba7] text-white text-xs font-semibold shadow-sm hover:bg-[#ff5fb6] active:scale-[0.97] transition"
                 >
                     Offer Ride

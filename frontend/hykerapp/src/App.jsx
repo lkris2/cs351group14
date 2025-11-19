@@ -4,6 +4,7 @@ import FindRidePage from "./FindRidePage";
 import LoginPage from "./components/loginPage";
 import AboutPage from "./components/about";
 import RequestRides from "./RequestRides";
+import RideConfirmation from "./components/rideConfirmation";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage/>}/>
         <Route path="/about" element={<AboutPage/>}/>
         <Route path="/requests" element={<RequestRides/>}/>
+        <Route path="/ride-confirmation" element={<RideConfirmation/>}/>
 
       </Routes>
     </Router>
