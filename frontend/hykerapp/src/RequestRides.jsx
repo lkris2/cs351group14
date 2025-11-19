@@ -44,7 +44,7 @@ export default function RequestRides(){
             <Navbar />
 
             <main className="flex-1 flex justify-center px-4 py-10">
-                <div className="w-full max-w-5xl">
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-start px-4 md:px-16">
                     <div>
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 gap-4">
                             <div>
@@ -78,7 +78,7 @@ export default function RequestRides(){
                         </div>
                     </div>
                     <div className="hidden md:block">
-                        <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[450px]">
+                        <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[85vh]">
                             <Map requests={requests} />
                         </div>
                     </div>
