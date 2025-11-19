@@ -1,9 +1,12 @@
 import {useState} from "react";
-
 import Navbar from "./navbar";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export default function loginPage(){
     const [coverEyes, setCoverEyes] = useState(false);
+    const navigate = useNavigate();
 
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#4b0226] via-[#7b1742] to-[#f9f2e8] flex flex-col">
@@ -26,7 +29,7 @@ export default function loginPage(){
                         <form className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Email
+                                Email
                                 </label>
                                 <input
                                     type="email"
@@ -59,6 +62,17 @@ export default function loginPage(){
                             <button type="submit" className="w-full mt-2 py-2.5 rounded-xl bg-[#58062F] text-white font-semibold text-sm shadow-lg hover:bg-[#7b1742] transition">
                                 Sign in 
                             </button>
+                            <h1 className="m-7 text-center">or sign in with your account</h1>
+
+                            <GoogleLogin
+                            onSuccess={(credentialResponse) => {
+                              console.log(credentialResponse)
+                              console.log(jwtDecode(credentialResponse.credential))
+                              navigate("/RidePage")
+                            }} 
+                            onError={() => console.log("Login Failed")}
+                            size="large"
+                            shape="circle"/>
                         </form>
 
                     </div>
