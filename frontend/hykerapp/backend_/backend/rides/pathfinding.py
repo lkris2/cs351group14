@@ -176,41 +176,41 @@ def build_components(graph):
 
     return comp
 
-coord_map = load_nodes()
-graph = make_graph("car")
+# coord_map = load_nodes()
+# graph = make_graph("car")
 
-# Build connected components for the car graph
-components = build_components(graph)
-print("Number of car components:", len(set(components.values())))
+# # Build connected components for the car graph
+# components = build_components(graph)
+# print("Number of car components:", len(set(components.values())))
 
-start_lat = 41.87
-start_lon = -87.65          # UIC SCE
+# start_lat = 41.87
+# start_lon = -87.65          # UIC SCE
 
-end_lat = 41.8787
-end_lon = -87.6403          # Union Station-ish (NEGATIVE!)
+# end_lat = 41.8787
+# end_lon = -87.6403          # Union Station-ish (NEGATIVE!)
 
-# 1) Pick start in ANY car node
-all_car_nodes = set(graph.keys())
-start_id = get_nearest_node(start_lat, start_lon, coord_map, all_car_nodes)
-start_comp = components[start_id]
+# # 1) Pick start in ANY car node
+# all_car_nodes = set(graph.keys())
+# start_id = get_nearest_node(start_lat, start_lon, coord_map, all_car_nodes)
+# start_comp = components[start_id]
 
-# 2) Restrict end search to nodes in the SAME component as start
-same_comp_nodes = [nid for nid, cid in components.items() if cid == start_comp]
-end_id   = get_nearest_node(end_lat, end_lon, coord_map, same_comp_nodes)
+# # 2) Restrict end search to nodes in the SAME component as start
+# same_comp_nodes = [nid for nid, cid in components.items() if cid == start_comp]
+# end_id   = get_nearest_node(end_lat, end_lon, coord_map, same_comp_nodes)
 
-print("start_id:", start_id, "deg:", coord_map[start_id])
-print("end_id:", end_id, "deg:", coord_map[end_id])
-print("start neighbors:", len(graph[start_id]))
-print("end neighbors:", len(graph[end_id]))
+# print("start_id:", start_id, "deg:", coord_map[start_id])
+# print("end_id:", end_id, "deg:", coord_map[end_id])
+# print("start neighbors:", len(graph[start_id]))
+# print("end neighbors:", len(graph[end_id]))
 
-path_node_ids = a_star(graph, start_id, end_id, coord_map)
-print("Path nodes:", path_node_ids)
+# path_node_ids = a_star(graph, start_id, end_id, coord_map)
+# print("Path nodes:", path_node_ids)
 
-if path_node_ids:
-    path_coords = [coord_map[nid] for nid in path_node_ids]
-    print("Path coords:", path_coords)
-else:
-    print("No path found")
+# if path_node_ids:
+#     path_coords = [coord_map[nid] for nid in path_node_ids]
+#     print("Path coords:", path_coords)
+# else:
+#     print("No path found")
 
     
 

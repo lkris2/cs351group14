@@ -7,7 +7,20 @@ import math
 
 from .pathfinding import load_nodes, make_graph, get_nearest_node, a_star, build_components
 
-# base_directory = os.path.dirname(os.path.abspath(_file_))
+base_directory = os.path.dirname(os.path.abspath(__file__))
+nodes = os.path.join(base_directory,"nodes.csv")
+edges = os.path.join(base_directory,"edges.csv")
+
+
+try:
+    coord_map = load_nodes(nodes)
+    graph = make_graph("car", path=edges)
+    components = build_components(graph)
+except Exception as exc:
+    coord_map = None
+    graph = None
+    components = None
+    startup_error = str(exc)
 
 @api_view(['POST'])
 def request_ride(request):
@@ -28,7 +41,40 @@ def request_ride(request):
         dropoff=dropoff
     )
 
-    return Response({"ride_id": ride.id, "status": ride.status})
+    route_coords = []
+    if coord_map is not None and graph is not None:
+        try:
+            all_car_nodes = set(graph.keys())
+            start_id = get_nearest_node(pickup_lat, pickup_long, coord_map,all_car_nodes)
+            if components and start_id in components:
+                start_comp = components[start_id]
+                same_comp_nodes = set()
+                for nid, cid in components.items():
+                    if cid == start_comp:
+                        same_comp_nodes.add(nid)
+                end_id = get_nearest_node(drop_lat, drop_long, coord_map, same_comp_nodes) or get_nearest_node(drop_lat, drop_long, coord_map, all_car_nodes)
+            else:
+                end_id = get_nearest_node(drop_lat, drop_long, coord_map, all_car_nodes)
+
+            if start_id and end_id:
+                path_node_ids = a_star(graph,start_id,end_id,coord_map)
+                
+                if path_node_ids:
+                    route_coords = []
+                    for n in path_node_ids:
+                        lat = coord_map[n][0]
+                        lon = coord_map[n][1]
+
+                        coord_dict = {
+                            "lat" : lat,
+                            "lon" : lon
+                        }
+                    
+                    route_coords.append(coord_dict)
+        except:
+            route_coords = []
+
+    return Response({"ride_id": ride.id, "status": ride.status, "route": route_coords})
 
 def distance(lat1, lng1, lat2, lng2):
     return math.sqrt((lat1 - lat2)**2 + (lng1 - lng2)**2)
