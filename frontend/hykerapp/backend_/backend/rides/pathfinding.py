@@ -10,6 +10,7 @@ import csv
 from collections import defaultdict 
 import math
 import heapq
+from collections import deque
 
 nodes = "nodes.csv"
 edges = "edges.csv"
@@ -28,6 +29,7 @@ def load_nodes(path=nodes):
             lat = float(row["lat"])
             lon = float(row["lon"])
             coordinate_map[id] = (lat,lon)
+    # print(coordinate_map)
     return coordinate_map
 
 def make_graph(mode="car", path=edges):
@@ -41,17 +43,26 @@ def make_graph(mode="car", path=edges):
         reader = csv.DictReader(f)
         for row in reader:
             start = int(row["source"])
-            dest = int(row("target"))
+            dest = int(row["target"])
             dist = float(row["length"])
-            
+            # print(start, dest, dist)
             if mode == "car":
+                
                 if row["car_forward"] != "Forbidden":
+                    # print("going here")
                     graph[start].append((dest,dist))
 
                 if row["car_backward"] != "Forbidden":
+                    # print("going here too")
                     graph[dest].append((start,dist))
             else:
                 raise ValueError("Only going to support car mode")
+    # count = 0
+    # for node, neighbors in graph.items():
+    #     print(f"Node {node}: {neighbors}")
+    #     count += 1
+    #     if count == 10: 
+    #         break
     return graph
 
 def get_haversine_distance(coord1, coord2):
@@ -83,6 +94,7 @@ def h_value(coord_map, n, goal):
     return get_haversine_distance(coord_map[n], coord_map[goal])
 
 def a_star(graph, start, goal, coord_map):
+    
     open_heap = []
     heapq.heappush(open_heap,(0,start))
     came_from = {}
@@ -108,7 +120,7 @@ def a_star(graph, start, goal, coord_map):
             if temp_g < g_score[neighbor]:
                 came_from[neighbor] = current
                 g_score[neighbor] = temp_g
-                f_score[neighbor] = h_value(coord_map, neighbor, goal)
+                f_score[neighbor] = temp_g + h_value(coord_map, neighbor, goal)
 
                 if neighbor not in open_set:
                     open_set.add(neighbor)
@@ -116,36 +128,89 @@ def a_star(graph, start, goal, coord_map):
     
     return None
 
-def get_nearest_node(lat, lon, coord_map):
+def get_nearest_node(lat, lon, coord_map, allowed_nodes):
     nearest_node = None
     best_dist = float("inf")
     target = (lat,lon)
     
-    for node_id, (nlat, nlon) in coord_map.items():
+    for node_id in allowed_nodes:
+        if node_id not in coord_map:
+            continue
+        nlat, nlon = coord_map[node_id]
         d = get_haversine_distance(target, (nlat, nlon))
         if d < best_dist:
             best_dist = d
             nearest_node = node_id
     return nearest_node
 
+def build_components(graph):
+    """
+    Returns a dict: comp[node_id] = component_id
+    Works safely even if graph is a defaultdict(list).
+    """
+    comp = {}
+    comp_id = 0
+
+    # 1) Build a stable set of all nodes (keys + neighbor ids)
+    nodes = set(graph.keys())
+    for adj in graph.values():
+        for v, _ in adj:
+            nodes.add(v)
+
+    # 2) BFS/DFS over this fixed node set
+    for node in nodes:
+        if node in comp:
+            continue
+
+        comp_id += 1
+        queue = deque([node])
+        comp[node] = comp_id
+
+        while queue:
+            u = queue.popleft()
+            # use graph.get(u, []) to avoid creating new keys in a defaultdict
+            for v, _ in graph.get(u, []):
+                if v not in comp:
+                    comp[v] = comp_id
+                    queue.append(v)
+
+    return comp
 
 coord_map = load_nodes()
 graph = make_graph("car")
 
-start_lat = 41.87
-start_lon = -87.65
-end_lat = 41.8787
-end_lon = 87.6403
+# Build connected components for the car graph
+components = build_components(graph)
+print("Number of car components:", len(set(components.values())))
 
-start_id = get_nearest_node(start_lat, start_lon, coord_map)
-end_id = get_nearest_node(end_lat, end_lon, coord_map)
+start_lat = 41.87
+start_lon = -87.65          # UIC SCE
+
+end_lat = 41.8787
+end_lon = -87.6403          # Union Station-ish (NEGATIVE!)
+
+# 1) Pick start in ANY car node
+all_car_nodes = set(graph.keys())
+start_id = get_nearest_node(start_lat, start_lon, coord_map, all_car_nodes)
+start_comp = components[start_id]
+
+# 2) Restrict end search to nodes in the SAME component as start
+same_comp_nodes = [nid for nid, cid in components.items() if cid == start_comp]
+end_id   = get_nearest_node(end_lat, end_lon, coord_map, same_comp_nodes)
+
+print("start_id:", start_id, "deg:", coord_map[start_id])
+print("end_id:", end_id, "deg:", coord_map[end_id])
+print("start neighbors:", len(graph[start_id]))
+print("end neighbors:", len(graph[end_id]))
 
 path_node_ids = a_star(graph, start_id, end_id, coord_map)
-path_coords = [coord_map[nid] for nid in path_node_ids]
-
 print("Path nodes:", path_node_ids)
-print("Path coords:", path_coords)
 
+if path_node_ids:
+    path_coords = [coord_map[nid] for nid in path_node_ids]
+    print("Path coords:", path_coords)
+else:
+    print("No path found")
 
     
 
