@@ -6,11 +6,15 @@ import { AiFillClockCircle } from "react-icons/ai";
 import InputField from "./inputField.jsx";
 import RiderCircle from "./riderCircle.jsx";
 import { Input } from "postcss";
+import trie from "../../backend/wordsearch.js";
 
 export default function HykerForm(){
     const [pickupLocation, setPickupLocation] = useState("");
     const [dropoffLocation, setDropoffLocation] = useState("");
     const [time, setTime] = useState("");
+    const [input, setInput] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
+    const[dropDown, setDropDown] = useState(false); 
 
     const riders = [
         { drivername: "Fernando", numMiles: "0.2 miles" },
@@ -22,7 +26,7 @@ export default function HykerForm(){
     ];
 
     return(
-        <div className="bg-[#4B002A] text-white w-[380px] p-6 rounded-2xl flex flex-col gap-6">
+        <div className="bg-[#4B002A] text-white w-[380px] p-6 rounded-3xl shadow-2xl flex flex-col gap-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Hitch a Ride</h2>
             </div>
@@ -31,7 +35,32 @@ export default function HykerForm(){
                     icon = {<AiFillCar/>}
                     placeholder="Pickup Location"
                     value={pickupLocation}
-                    onChange={(e) => setPickupLocation(e.target.value)} />
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setInput(value);
+                        setSuggestions(trie.getSuggestions(value));
+                        console.log(suggestions);
+                        setDropDown(true)
+                        setPickupLocation(e.target.value)
+                    }}
+                    options={suggestions} 
+                    />
+                    {suggestions.length > 0 && dropDown && (
+                        <ul className="mt-10 ml-0 absolute bg-white border w-50 rounded shadow">
+                        {suggestions.map((s, i) => (
+                            <li
+                            key={i}
+                            onClick={() => {
+                                setPickupLocation(s)
+                                setDropDown(false);
+                            }}
+                            className="p-2 text-black cursor-pointer"
+                            >
+                            {s}
+                            </li>
+                        ))}
+                        </ul>
+                    )}
                 <InputField
                     icon = {<AiTwotoneEnvironment/>}
                     placeholder="Drop-off Location"
