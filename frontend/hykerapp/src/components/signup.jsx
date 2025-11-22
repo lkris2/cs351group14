@@ -12,6 +12,12 @@ export default function loginPage(){
 
     const [isHovering, setIsHovering] = useState(false);
 
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const handleMouseEnter = () => {
       setIsHovering(true);
     };
@@ -19,6 +25,38 @@ export default function loginPage(){
     const handleMouseLeave = () => {
       setIsHovering(false);
     };
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      setError(null);
+      if (!email) {
+        setError('Email is required');
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = await fetch('http://localhost:3000/api/users/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await res.json();
+        if (res.status === 201) {
+          console.log('User created', data);
+          navigate('/RidePage');
+        } else if (res.status === 409) {
+          setError('An account with this email already exists. Please login instead.');
+        } else if (!res.ok) {
+          setError(data.error || 'Server error');
+        }
+      } catch (err) {
+        console.error(err);
+        setError('Network error');
+      } finally {
+        setLoading(false);
+      }
+    }
 
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#4b0226] via-[#7b1742] to-[#f9f2e8] flex flex-col">
@@ -51,65 +89,80 @@ export default function loginPage(){
                             Your Next Ride Awaits...
                         </h1>
 
-                        <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Name
                                 </label>
-                                <input
-                                    type="name"
-                                    className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
-                                />
+                <input
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  type="text"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
+                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Email
                                 </label>
-                                <input
-                                    type="email"
-                                    className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
-                                />
+                <input
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  type="email"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
+                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Password
                                 </label>
-                                <input
-                                    type="password"
-                                    className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
-                                    onFocus={() => setCoverEyes(true)}
-                                    onBlur={()=> setCoverEyes(false)}
-                                />
+                <input
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  type="password"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
+                  onFocus={() => setCoverEyes(true)}
+                  onBlur={()=> setCoverEyes(false)}
+                />
                             </div>
 
-                            {/* <div className="flex items-center justify-between text-xs text-gray-500">
-                                <label className="inline-flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded border-gray-300 text-[#58062F] focus:ring-[#58062F]"
-                                    />
-                                    <span>Remember me</span>
-                                </label>
-                                <button type="button" className="text-[#58062F] hover:text-[#7b1742] font-medium">
-                                    Forgot Password?
-                                </button>
-                            </div> */}
-                            <div className="flex items-center justify-center scale-100">
-                                <button type="submit" className="w-full mt-2 py-2.5 rounded-xl bg-[#58062F] text-white font-semibold text-sm shadow-lg hover:bg-[#7b1742] transition">
-                                    Create Your Account
-                                </button>
-                            </div>
+              {error && <div className="text-sm text-red-600">{error}</div>}
+              <div className="flex items-center justify-center scale-100">
+                <button disabled={loading} type="submit" className="w-full mt-2 py-2.5 rounded-xl bg-[#58062F] text-white font-semibold text-sm shadow-lg hover:bg-[#7b1742] transition disabled:opacity-50">
+                  {loading ? 'Processing...' : 'Create Your Account'}
+                </button>
+              </div>
                             <h1 className="m-7 text-center">or sign up with your account</h1>
                             
                             <div className="flex items-center justify-center scale-125 mb-5">
                               <GoogleLogin
-                              onSuccess={(credentialResponse) => {
-                                console.log(credentialResponse)
-                                console.log(jwtDecode(credentialResponse.credential))
-                                navigate("/RidePage")
-                              }} 
-                              onError={() => console.log("Login Failed")}
-                              size="large"/>
+                                onSuccess={async (credentialResponse) => {
+                                  try {
+                                    const decoded = jwtDecode(credentialResponse.credential);
+                                    const email = decoded.email;
+                                    const name = decoded.name || decoded.given_name || '';
+                                    console.log('Google decoded', decoded);
+                                    const res = await fetch('http://localhost:3000/api/users/oauth/google', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ email, name })
+                                    });
+                                    const data = await res.json();
+                                    if (res.ok) {
+                                      console.log('OAuth response', data);
+                                      navigate('/RidePage');
+                                    } else {
+                                      console.error('OAuth error', data);
+                                      setError(data.error || 'OAuth error');
+                                    }
+                                  } catch (err) {
+                                    console.error('Google login handler error', err);
+                                    setError('Google sign-in failed');
+                                  }
+                                }}
+                                onError={() => setError('Google sign-in failed')}
+                                size="large"
+                              />
 
                             </div>
                             
@@ -126,14 +179,14 @@ export default function loginPage(){
 function Teddy({ isCoveringEyes }) {
   const leftArmStyle = {
     transform: isCoveringEyes
-      ? "translate(12px, -60px) rotate(18deg)" // up + inwards
+      ? "translate(12px, -60px) rotate(18deg)" 
       : "translate(0px, 0px)",
     transition: "transform 0.25s ease-out",
   };
 
   const rightArmStyle = {
     transform: isCoveringEyes
-      ? "translate(-12px, -60px) rotate(-18deg)" // up + inwards
+      ? "translate(-12px, -60px) rotate(-18deg)"
       : "translate(0px, 0px)",
     transition: "transform 0.25s ease-out",
   };

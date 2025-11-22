@@ -5,7 +5,19 @@ import LoginPage from "./components/loginPage";
 import AboutPage from "./components/about";
 import SignUp from "./components/signup";
 
+import { useEffect, useState } from "react";
+
 export default function App() {
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/users")
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <Router>
       <Routes>
