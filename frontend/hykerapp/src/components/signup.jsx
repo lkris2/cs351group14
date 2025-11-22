@@ -27,12 +27,12 @@ export default function loginPage(){
                 <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl grid md:grid-cols-2 overflow-hidden">
                     <div className="bg-[#f9f2e8] flex flex-col items-center justify-center p-8">
                         <p className="text-xs tracking-[0.25em] uppercase text-pink-900/70 mb-4 mt-5">
-                            WELCOME BACK
+                            HELLO, RIDER!
                         </p>
                         <Teddy isCoveringEyes={coverEyes} />
 
                         <Link 
-                        to="/SignUp" 
+                        to="/login" 
                         className="mt-10 underline text-amber-800"
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
@@ -41,18 +41,26 @@ export default function loginPage(){
                           fontWeight: "bold",
                           cursor: 'pointer'
                         }}> 
-                        New to Hyker? Sign Up Here
+                        Already a Hyker? Login Through Here
                         </Link>
                         
                     </div>
 
                     <div className="p-8 flex flex-col justify-center bg-white">
                         <h1 className="text-2xl md:text-3xl font-bold text-[#58062F] mb-2">
-                            Welcome Back to Hyker
+                            Your Next Ride Awaits...
                         </h1>
 
                         <form className="space-y-4">
-                          
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Name
+                                </label>
+                                <input
+                                    type="name"
+                                    className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#58062F] focus:border-[#58062F]"
+                                />
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Email
@@ -74,7 +82,7 @@ export default function loginPage(){
                                 />
                             </div>
 
-                            <div className="flex items-center justify-between text-xs text-gray-500">
+                            {/* <div className="flex items-center justify-between text-xs text-gray-500">
                                 <label className="inline-flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -85,11 +93,13 @@ export default function loginPage(){
                                 <button type="button" className="text-[#58062F] hover:text-[#7b1742] font-medium">
                                     Forgot Password?
                                 </button>
+                            </div> */}
+                            <div className="flex items-center justify-center scale-100">
+                                <button type="submit" className="w-full mt-2 py-2.5 rounded-xl bg-[#58062F] text-white font-semibold text-sm shadow-lg hover:bg-[#7b1742] transition">
+                                    Create Your Account
+                                </button>
                             </div>
-                            <button type="submit" className="w-full mt-2 py-2.5 rounded-xl bg-[#58062F] text-white font-semibold text-sm shadow-lg hover:bg-[#7b1742] transition">
-                                Sign in 
-                            </button>
-                            <h1 className="m-7 text-center">or sign in with your account</h1>
+                            <h1 className="m-7 text-center">or sign up with your account</h1>
                             
                             <div className="flex items-center justify-center scale-125 mb-5">
                               <GoogleLogin
