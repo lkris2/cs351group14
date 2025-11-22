@@ -35,7 +35,7 @@ export default function loginPage(){
       }
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:3000/api/users/signup', {
+  const res = await fetch('http://127.0.0.1:8000/api/users/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
@@ -142,7 +142,7 @@ export default function loginPage(){
                                     const email = decoded.email;
                                     const name = decoded.name || decoded.given_name || '';
                                     console.log('Google decoded', decoded);
-                                    const res = await fetch('http://localhost:3000/api/users/oauth/google', {
+                                    const res = await fetch('http://127.0.0.1:8000/api/users/oauth/google', {
                                       method: 'POST',
                                       headers: { 'Content-Type': 'application/json' },
                                       body: JSON.stringify({ email, name })

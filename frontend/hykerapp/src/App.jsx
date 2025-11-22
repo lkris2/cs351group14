@@ -12,7 +12,7 @@ export default function App() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/users")
+    fetch("http://127.0.0.1:8000/api/users")
       .then((res) => res.json())
       .then((data) => setUsers(data))
       .catch((err) => console.error(err));
