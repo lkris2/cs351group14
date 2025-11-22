@@ -1,7 +1,7 @@
 import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet"
 import L from "leaflet"
 
-export default function MapView({ route }){
+export default function mapView({ route }){
     const polyline = route.map(p => {p.lat, p.lon});
     return(
         <MapContainer
