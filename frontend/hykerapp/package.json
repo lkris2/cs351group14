@@ -2,6 +2,7 @@
   "name": "hyker-app",
   "private": true,
   "dependencies": {
+    "@react-google-maps/api": "^2.20.7",
     "@tailwindcss/vite": "^4.1.15",
     "leaflet": "^1.9.4",
     "react": "^19.1.1",
