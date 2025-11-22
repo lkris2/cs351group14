@@ -30,6 +30,45 @@ except Exception as exc:
     components = None
     startup_error = str(exc)
 
+@api_view(["GET"])
+def list_ride_requests(request):
+    qs = RideRequest.objects.select_related("pickup", "dropoff", "rider__user").all()
+
+    data = []
+    for r in qs:
+        user = getattr(r.rider, "user", None)
+
+        # Name + initials for the React UI
+        if user:
+            name = user.get_full_name() or user.username
+        else:
+            name = f"Rider {r.id}"
+
+        initials = ""
+        if user and user.first_name and user.last_name:
+            initials = (user.first_name[0] + user.last_name[0]).upper()
+        else:
+            initials = name[:2].upper()
+
+        data.append({
+            "id": r.id,
+            "name": name,
+            "initials": initials,
+            "from": "Pickup",      # you can replace with real address later
+            "to": "Dropoff",
+            "pickupLocation": {
+                "lat": r.pickup.lat,
+                "lng": r.pickup.long,
+            },
+            "dropoffLocation": {
+                "lat": r.dropoff.lat,
+                "lng": r.dropoff.long,
+            },
+            "status": r.status,
+        })
+
+    return Response(data)
+
 @api_view(['POST'])
 def request_ride(request):
     rider_id = request.data['rider_id']
@@ -82,6 +121,8 @@ def request_ride(request):
             route_coords = []
 
     return Response({"ride_id": ride.id, "status": ride.status, "route": route_coords})
+
+
 
 def distance(lat1, lng1, lat2, lng2):
     return math.sqrt((lat1 - lat2)**2 + (lng1 - lng2)**2)

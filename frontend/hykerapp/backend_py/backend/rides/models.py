@@ -10,6 +10,7 @@ class Location(models.Model):
 class Rider(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=20, default="Anonymus")
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
