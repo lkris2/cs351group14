@@ -24,9 +24,9 @@
 # ]
 
 from django.contrib import admin
-from django.urls import path, include   # 👈 include imported here
+from django.urls import path, include  
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('rides.urls')),  # 👈 point to your app's urls
+    path('api/', include('rides.urls')), 
 ]

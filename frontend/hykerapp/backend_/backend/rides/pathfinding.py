@@ -151,13 +151,13 @@ def build_components(graph):
     comp = {}
     comp_id = 0
 
-    # 1) Build a stable set of all nodes (keys + neighbor ids)
+    
     nodes = set(graph.keys())
     for adj in graph.values():
         for v, _ in adj:
             nodes.add(v)
 
-    # 2) BFS/DFS over this fixed node set
+   
     for node in nodes:
         if node in comp:
             continue
@@ -168,7 +168,7 @@ def build_components(graph):
 
         while queue:
             u = queue.popleft()
-            # use graph.get(u, []) to avoid creating new keys in a defaultdict
+            
             for v, _ in graph.get(u, []):
                 if v not in comp:
                     comp[v] = comp_id

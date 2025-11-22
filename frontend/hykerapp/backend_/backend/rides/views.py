@@ -69,8 +69,7 @@ def request_ride(request):
                             "lat" : lat,
                             "lon" : lon
                         }
-                    
-                    route_coords.append(coord_dict)
+                        route_coords.append(coord_dict)
         except:
             route_coords = []
 
