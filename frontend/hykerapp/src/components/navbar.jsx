@@ -1,7 +1,14 @@
 import hykerLogo from "../assets/hykerLogo.png";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../Authcontext";
+import { useContext } from "react";
+
 
 export default function Navbar(){
+
+    const { isLoggedIn } = useContext(AuthContext);
+    // const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
+
     return(
         <nav className = "bg-[#58062F] text-white flex justify-between items-center px-10 py-4">
              <div className="flex items-center gap-3">
@@ -27,12 +34,27 @@ export default function Navbar(){
                 >
                     About
                 </Link>
-                <Link
+                {/* <Link
                     to="/login"
                     className="hover:underline underline-offset-4 text-lg"
                 >
                     Login
                 </Link>
+                {/* <button onClick={handleLogout} className="hover:underline underline-offset-4 text-lg">
+                    Log Out
+                </button> */}
+
+                {!isLoggedIn && (
+                    <Link to="/login" className="hover:underline underline-offset-4 text-lg">
+                        Login
+                    </Link>
+                )}
+
+                {isLoggedIn && (
+                    <Link to="/logout" className="hover:underline underline-offset-4 text-lg">
+                        Logout
+                    </Link>
+                )}
             </div>
         </nav>
     )

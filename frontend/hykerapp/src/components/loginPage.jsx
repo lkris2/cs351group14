@@ -1,12 +1,14 @@
-import {useState} from "react";
+import {useState, useContext } from "react";
 import Navbar from "./navbar";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import SignUp from "./signup.jsx";
+import { AuthContext } from "../Authcontext.jsx";
 
 export default function loginPage(){
+    const { setIsLoggedIn } = useContext(AuthContext);
     const [coverEyes, setCoverEyes] = useState(false);
     const navigate = useNavigate();
 
@@ -16,6 +18,7 @@ export default function loginPage(){
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isLoggedIn] = useState(false); // Track login status
 
     const handleMouseEnter = () => {
       setIsHovering(true);
@@ -42,7 +45,10 @@ export default function loginPage(){
         const data = await res.json();
         if (res.status === 200) {
           console.log('Login response', data);
-          navigate('/RidePage');
+          localStorage.setItem("isLoggedIn", "true");
+
+          setIsLoggedIn(true);
+          navigate('/'); // or any route you want
         } else if (res.status === 401) {
           setError('Incorrect password. Please try again.');
         } else if (res.status === 404) {
@@ -56,6 +62,13 @@ export default function loginPage(){
       } finally {
         setLoading(false);
       }
+    }
+
+    function handleLogout() {
+      localStorage.setItem("isLoggedIn", "false");
+      // localStorage.removeItem("isLoggedIn");
+      setIsLoggedIn(false);
+      navigate("/");
     }
 
     return(

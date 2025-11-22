@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./HomePage";
 import FindRidePage from "./FindRidePage";
 import RidePage from "./RidePage";
@@ -6,12 +6,27 @@ import 'leaflet/dist/leaflet.css';
 import LoginPage from "./components/loginPage";
 import AboutPage from "./components/about";
 import SignUp from "./components/signup";
+import Logout from "./components/logout";
 
 import { useEffect, useState } from "react";
 import RequestRides from "./RequestRides";
 import RideConfirmation from "./components/rideConfirmation";
 
 export default function App() {
+
+  // if(!localStorage.getItem("isLoggedIn")){
+  localStorage.setItem("isLoggedIn", false);
+  // }
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
+
+  function ProtectedRoute({ children }) {
+    return localStorage.getItem("isLoggedIn") === "true" ? children : <Navigate to="/login" />;
+  }
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(loggedIn);
+  }, []);
 
   const [users, setUsers] = useState([]);
 
@@ -25,15 +40,48 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/RidePage" element={<FindRidePage />} />
-        <Route path="/ride" element={<RidePage/>} />
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/signup" element={<SignUp/>}/>
-        <Route path="/about" element={<AboutPage/>}/>
-        <Route path="/requests" element={<RequestRides/>}/>
-        <Route path="/ride-confirmation" element={<RideConfirmation/>}/>
-
+        <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route
+          path="/"
+          element={
+            <HomePage />
+          }
+        />
+        <Route
+          path="/RidePage"
+          element={
+            <ProtectedRoute>
+              <FindRidePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ride"
+          element={
+            <ProtectedRoute>
+              <RidePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests"
+          element={
+            <ProtectedRoute>
+              <RequestRides />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ride-confirmation"
+          element={
+            <ProtectedRoute>
+              <RideConfirmation />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/logout" element={<Logout/>} />
       </Routes>
     </Router>
   );
