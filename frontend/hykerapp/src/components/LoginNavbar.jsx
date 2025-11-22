@@ -16,37 +16,12 @@ export default function Navbar(){
             </div>
 
             <div className="flex gap-10">
-                {isLoggedIn && (
-                    <Link
-                        to="/request-rides"
-                        className="hover:underline underline-offset-4 text-lg"
-                    >
-                        See Requests
-                    </Link>
-                )}
-                {isLoggedIn && (
-                    <Link
-                        to="/find-ride"
-                        className="hover:underline underline-offset-4 text-lg"
-                    >
-                        Ride
-                    </Link>
-                )}
                 <Link
                     to="/about"
                     className="hover:underline underline-offset-4 text-lg"
                 >
                     About
                 </Link>
-                {/* <Link
-                    to="/login"
-                    className="hover:underline underline-offset-4 text-lg"
-                >
-                    Login
-                </Link>
-                {/* <button onClick={handleLogout} className="hover:underline underline-offset-4 text-lg">
-                    Log Out
-                </button> */}
 
                 {!isLoggedIn && (
                     <Link to="/login" className="hover:underline underline-offset-4 text-lg">

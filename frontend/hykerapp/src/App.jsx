@@ -12,8 +12,12 @@ import { useEffect, useState } from "react";
 import RequestRides from "./RequestRides";
 import RideConfirmation from "./components/rideConfirmation";
 
-export default function App() {
 
+  
+
+
+
+export default function App() {
   // if(!localStorage.getItem("isLoggedIn")){
   localStorage.setItem("isLoggedIn", false);
   // }
@@ -27,15 +31,45 @@ export default function App() {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedIn);
   }, []);
-
+    const [requests, setRequests] = useState([
+    {
+        id:1,
+        name: "Priya",
+        initials: "PM",
+        from: "UIC Campus",
+        to: "Downtown Chicago",
+        pickupLocation: { lat: 41.8708, lng: -87.6505 },
+        dropoffLocation: { lat: 41.8839, lng: -87.6323 },
+    },
+    {
+        id:2,
+        name: "Alex Morgan",
+        initials: "AM",
+        from: "Student Center East",
+        to: "Union Station",
+        pickupLocation: { lat: 41.8722, lng: -87.6480 },
+        dropoffLocation: { lat: 41.8787, lng: -87.6396 },
+    },
+    {
+        id:3,
+        name: "Gargi S",
+        initials: "GS",
+        from: "Michigan Ave",
+        to: "Union Station",
+        pickupLocation: { lat: 41.8916, lng: -87.6244 }
+    }
+  ]);
+  const addRequest = (newReq) => {
+    setRequests(prev => [...prev, newReq]);
+  };
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch((err) => console.error(err));
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:8000/api/users")
+  //     .then((res) => res.json())
+  //     .then((data) => setUsers(data))
+  //     .catch((err) => console.error(err));
+  // }, []);
 
   return (
     <Router>
@@ -50,35 +84,33 @@ export default function App() {
           }
         />
         <Route
-          path="/RidePage"
+          path="/find-ride"
           element={
-            <ProtectedRoute>
-              <FindRidePage />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+              <FindRidePage addRequest={addRequest} />
+            // {/* </ProtectedRoute> */}
           }
         />
         <Route
           path="/ride"
           element={
-            <ProtectedRoute>
+            // <ProtectedRoute>
               <RidePage />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
         <Route
-          path="/requests"
+          path="/request-rides"
           element={
-            <ProtectedRoute>
-              <RequestRides />
-            </ProtectedRoute>
+              <RequestRides requests={requests} />
           }
         />
         <Route
           path="/ride-confirmation"
           element={
-            <ProtectedRoute>
+            // <ProtectedRoute>
               <RideConfirmation />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
         <Route path="/logout" element={<Logout/>} />

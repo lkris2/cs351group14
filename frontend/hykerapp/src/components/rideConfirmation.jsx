@@ -76,7 +76,7 @@ export default function rideConfirmation(){
                         </p>
                         <div className="mt-auto flex flex-wrap gap-3">
                             <button
-                                onclick = {() => navigate("/requests")}
+                                onClick = {() => navigate("/request-rides")}
                                 className = "px-6 py-2 rounded-full bg-[#ff3ba7] text-white text-sm font-semibold shadow-sm hover:bg-[#ff5fb6] active:scale-[0.97] transition"
                             >
                                 Back to Ride Requests

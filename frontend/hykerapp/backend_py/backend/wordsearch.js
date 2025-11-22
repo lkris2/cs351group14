@@ -1,19 +1,26 @@
 import {Node, Trie}from "./trie"
 const trie = new Trie();
 const locations = [
-  "Dr. Martin Luther King Jr. Drive",
-    "Madison Street",
-    "Randolph Street",
-    "Pershing Road",
-    "Garfield Boulevard",
-    "95th Street",
-    "Lake Street",
-    "Hubbard Street",
-    "Grand Avenue",
-    "Ohio Street",
-    "Chicago Avenue",
-    "Oak Street",
-    "Division Street"
+  "UIC Main Campus",
+  "Student Center East",
+  "Student Center West",
+  "University Village / Little Italy",
+  "Pilsen",
+  "Greektown",
+  "Union Station",
+  "Willis Tower (Sears Tower)",
+  "Millennium Park",
+  "Maggie Daley Park",
+  "Navy Pier",
+  "The Loop (Downtown Chicago)",
+  "Museum Campus (Field Museum / Shedd / Adler)",
+  "Grant Park",
+  "McCormick Place",
+  "Chinatown",
+  "West Loop / Restaurant Row",
+  "United Center",
+  "Lincoln Park Zoo",
+  "Wrigley Field"
 ];
 
 for (const place of locations) {

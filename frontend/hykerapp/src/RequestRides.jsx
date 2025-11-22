@@ -1,44 +1,24 @@
 import Navbar from "./components/navbar";
 import RequestCard from "./components/requestCard";
 import Map from "./components/map";
+import { useNavigate, useNavigation } from "react-router-dom";
 
-const requests=[
-    {
-        id:1,
-        name: "Priya",
-        initials: "PM",
-        from: "UIC Campus",
-        to: "Downtown Chicago",
-        time: "Today - 5:30 PM",
-        note: "Pickup near Enginnering building",
-        gasPriceShare: "Split gas -> $5-$7",
-        pickupLocation: { lat: 41.8708, lng: -87.6505 }
-    },
-    {
-        id:2,
-        name: "Alex Morgan",
-        initials: "AM",
-        from: "Student Center East",
-        to: "Union Station",
-        time: "Today - 7:00 PM",
-        note: "I have a big suitcase",
-        gasPriceShare: "Split gas -> $5-$8",
-        pickupLocation: { lat: 41.8722, lng: -87.6480 }
-    },
-    {
-        id:3,
-        name: "Gargi S",
-        initials: "GS",
-        from: "Michigan Ave",
-        to: "Union Station",
-        time: "Today - 6:30 PM",
-        note: "Pickup near nutella cafe",
-        gasPriceShare: "Just a Ride :)",
-        pickupLocation: { lat: 41.8916, lng: -87.6244 }
+
+export default function RequestRides({requests}){
+
+    const navigate = useNavigate()
+    function handleOfferRide(request) {
+        navigate("/ride", {
+        state: {
+            riderId: 1, // placeholder
+            pickupLat: request.pickupLocation.lat,
+            pickupLong: request.pickupLocation.lng,
+            dropLat: request.dropoffLocation.lat,
+            dropLong: request.dropoffLocation.lng,
+        },
+        });
     }
-];
 
-export default function RequestRides(){
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#fbe9f2] via-[#f7f2ff] to-[#fde4f8] flex flex-col">
             <Navbar />
@@ -58,7 +38,7 @@ export default function RequestRides(){
                         </div>
                     
 
-                        <div className="flex gap-4 text-sm">
+                        {/* <div className="flex gap-4 text-sm">
                             <select className="px-3 py-2 rounded-full bg-white shadow-sm border border-pink-100 text-[#58062F]">
                                 <option>Any day</option>
                                 <option>Today</option>
@@ -70,7 +50,7 @@ export default function RequestRides(){
                                 <option>Within 5 miles</option>
                                 <option>Within 2 miles</option>
                             </select>
-                        </div>
+                        </div> */}
                         <div className="flex flex-col gap-5">
                             {requests.map((req) => (
                                 <RequestCard key={req.id} request={req} />

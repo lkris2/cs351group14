@@ -1,20 +1,22 @@
 import Navbar from "./components/navbar";
 import HykerForm from "./components/hykerForm";
-import UpcomingRides from "./components/upcomingRides";
+import FindRideMap from "./components/FindRideMap";   // 👈 add this
 
-export default function FindRidePage() {
+export default function FindRidePage({ addRequest }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fbe9f2] via-[#f7f2ff] to-[#fbe4e8] flex flex-col">
       <Navbar />
-      <main className="flex-1 flex justify-center px-10 py-10">
+      <main className="flex-1 flex px-10 py-10">
+        {/* LEFT FORM */}
+        <div className="w-[380px] mr-10">
+          <HykerForm addRequest={addRequest} />
+        </div>
 
-        <div className="flex w-full max-w-5xl items-start">
-       
-          <div className="mr-10">
-            <HykerForm />
+        {/* RIGHT POPULAR DESTINATIONS MAP */}
+        <div className="flex-1">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[85vh] w-full">
+            <FindRideMap />
           </div>
-          
-          <UpcomingRides />
         </div>
       </main>
     </div>

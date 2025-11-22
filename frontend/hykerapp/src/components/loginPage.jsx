@@ -19,6 +19,7 @@ export default function loginPage(){
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isLoggedIn] = useState(false); // Track login status
+    
 
     const handleMouseEnter = () => {
       setIsHovering(true);
@@ -48,7 +49,7 @@ export default function loginPage(){
           localStorage.setItem("isLoggedIn", "true");
 
           setIsLoggedIn(true);
-          navigate('/'); // or any route you want
+          navigate('/find-ride'); // or any route you want
         } else if (res.status === 401) {
           setError('Incorrect password. Please try again.');
         } else if (res.status === 404) {
