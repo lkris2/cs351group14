@@ -11,6 +11,15 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from mongoengine import connect
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+connect(
+    db='HykerApp',
+    host=os.environ.get('MONGO_DB', 'mongodb://localhost:27017/HykerApp')
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -110,6 +119,8 @@ CORS_ALLOW_METHODS = [
     "POST",
     "OPTIONS",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

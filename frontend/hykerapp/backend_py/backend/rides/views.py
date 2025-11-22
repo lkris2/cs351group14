@@ -2,10 +2,18 @@ import os
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Rider, Driver, Location, RideRequest
+from .models import Rider, Driver, Location, RideRequest, User
 import math
+from django.http import HttpResponse, JsonResponse
+from mongoengine import connect
+
+# connect(
+#     host=os.environ.get('MONGO_DB')
+# )
 
 from .pathfinding import load_nodes, make_graph, get_nearest_node, a_star, build_components
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 base_directory = os.path.dirname(os.path.abspath(__file__))
 nodes = os.path.join(base_directory,"nodes.csv")
@@ -113,3 +121,45 @@ def accept_ride(request):
     ride_req.save()
 
     return Response({"status": "ACCEPTED"})
+
+@csrf_exempt
+def users_list(request):
+    if request.method == 'GET':
+        users = User.objects.all()
+        data = [{"name": u.name, "email": u.email} for u in users]
+        return JsonResponse(data, safe=False)
+    elif request.method == 'POST':
+        body = json.loads(request.body)
+        user = User(name=body['name'], email=body['email'], password=body['password'])
+        user.save()
+        return JsonResponse({"message": "User created"}, status=201)
+
+@csrf_exempt
+def user_login(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        try:
+            user = User.objects.get(email=body['email'], password=body['password'])
+            return JsonResponse({"message": "Login successful", "name": user.name})
+        except User.DoesNotExist:
+            return JsonResponse({"message": "Invalid credentials"}, status=401)
+
+@csrf_exempt
+def user_signup(request):
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body)
+            email = body.get('email')
+            name = body.get('name')
+            password = body.get('password')
+            if User.objects.filter(email=email).count() > 0:
+                return JsonResponse({'error': 'Email already exists'}, status=409)
+            user = User(name=name, email=email, password=password)
+            user.save()
+            return JsonResponse({'message': 'User created'}, status=201)
+        except Exception as e:
+            print("Signup error:", e)  # Add this line for debugging
+            return JsonResponse({'error': str(e)}, status=500)
+
+def root(request):
+    return HttpResponse("haiii Hello, MongoDB!")

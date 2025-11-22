@@ -6,7 +6,7 @@ import { AiFillClockCircle } from "react-icons/ai";
 import InputField from "./inputField.jsx";
 import RiderCircle from "./riderCircle.jsx";
 import { Input } from "postcss";
-import trie from "../../backend_/backend/wordsearch.js";
+import trie from "../../backend_py/backend/wordsearch.js";
 
 export default function HykerForm(){
     const [pickupLocation, setPickupLocation] = useState("");
