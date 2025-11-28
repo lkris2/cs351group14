@@ -14,6 +14,8 @@ from mongoengine import connect
 from .pathfinding import load_nodes, make_graph, get_nearest_node, a_star, build_components
 from django.views.decorators.csrf import csrf_exempt
 import json
+import urllib.request
+import urllib.error
 
 base_directory = os.path.dirname(os.path.abspath(__file__))
 nodes = os.path.join(base_directory,"nodes.csv")
@@ -149,6 +151,7 @@ def user_signup(request):
     if request.method == 'POST':
         try:
             body = json.loads(request.body)
+            print('DEBUG: Received OAuth request body:', body)
             email = body.get('email')
             name = body.get('name')
             password = body.get('password')
@@ -160,6 +163,62 @@ def user_signup(request):
         except Exception as e:
             print("Signup error:", e)  # Add this line for debugging
             return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def user_oauth_google(request):
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body)
+            id_token = body.get('id_token')
+            if not id_token:
+                # Fallback: if email/name was sent from client, accept that for demo
+                email = body.get('email')
+                name = body.get('name') or ''
+                if not email:
+                    print('DEBUG: Missing id_token and email in body')
+                    return JsonResponse({'error': 'ID token is required'}, status=400)
+                # Skip verification for demos that post email/name directly
+                print('DEBUG: Using email/name fallback for OAuth (no id_token provided)')
+
+            # If we received an id_token, verify the token using Google's tokeninfo endpoint
+            if id_token:
+                # This is a simple verification for demo purposes.
+                tokeninfo_url = f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}"
+                try:
+                    with urllib.request.urlopen(tokeninfo_url) as resp:
+                        data = json.loads(resp.read().decode())
+                except urllib.error.HTTPError as err:
+                    print('DEBUG: token verification failed', err)
+                    return JsonResponse({'error': 'Invalid token or token verification failed'}, status=400)
+
+                # Verify the audience matches our frontend Google client ID if available
+                expected_aud = os.environ.get('VITE_MY_GOOGLE_OAUTH') or os.environ.get('GOOGLE_CLIENT_ID')
+                aud_field = data.get('aud')
+                if expected_aud and aud_field and expected_aud != aud_field:
+                    print('DEBUG: token audience mismatch', expected_aud, aud_field)
+                    return JsonResponse({'error': 'Invalid token audience'}, status=403)
+
+                email = data.get('email')
+                name = data.get('name') or data.get('given_name') or ''
+                if not email:
+                    return JsonResponse({'error': 'Token did not contain email'}, status=400)
+            # Otherwise, we are using fallback email and name which were preloaded from the request body
+
+            existing = User.objects.filter(email=email)
+            if existing.count() > 0:
+                user = existing.first()
+                return JsonResponse({'message': 'User exists', 'name': user.name}, status=200)
+
+            # Create user (no password for OAuth demo)
+            user = User(name=name, email=email, password='')
+            user.save()
+            return JsonResponse({'message': 'User created', 'name': user.name}, status=201)
+        except Exception as e:
+            print('OAuth signup error:', e)
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 def root(request):
     return HttpResponse("haiii Hello, MongoDB!")

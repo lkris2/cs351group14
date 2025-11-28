@@ -1,10 +1,12 @@
 import {useState} from "react";
 import Navbar from "./navbar";
+import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import SignUp from "./signup.jsx";
+import googleLogo from '../assets/googleLogo.svg.webp';
 
 export default function loginPage(){
     const [coverEyes, setCoverEyes] = useState(false);
@@ -15,9 +17,10 @@ export default function loginPage(){
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [googleLoading, setGoogleLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    
     const handleMouseEnter = () => {
       setIsHovering(true);
     };
@@ -57,6 +60,59 @@ export default function loginPage(){
         setLoading(false);
       }
     }
+    const handleGoogleSuccess = async (response) => {
+        setGoogleLoading(true);
+        setError(null);
+
+        try {
+            // Use the access_token to fetch user info from Google
+            const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: {
+                    'Authorization': `Bearer ${response.access_token}`
+                }
+            });
+            const decoded = await userInfoResponse.json();
+            
+            const email = decoded.email;
+            const name = decoded.name || decoded.given_name || '';
+            console.log('Google decoded (from Access Token)', decoded);
+
+            // Send the user info to your backend for sign-up/login
+            const res = await fetch('http://localhost:8000/api/users/oauth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, name })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                console.log('OAuth response', data);
+                navigate('/RidePage'); 
+            } else {
+                console.error('OAuth error', data);
+                setError(data.error || 'OAuth error');
+            }
+
+        } catch (err) {
+            console.error('Google login handler error', err);
+            setError('Google sign-in failed');
+        } finally {
+            setGoogleLoading(false);
+        }
+    };
+
+    const handleGoogleError = () => {
+        setError('Google sign-in failed');
+        setGoogleLoading(false);
+    };
+
+    // 3. THE HOOK THAT STARTS THE OAUTH PROCESS
+    const googleLogin = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: handleGoogleError,
+        scope: 'email profile', 
+    });
 
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#4b0226] via-[#7b1742] to-[#f9f2e8] flex flex-col">
@@ -133,40 +189,29 @@ export default function loginPage(){
                 </button>
               </div>
                             <h1 className="m-7 text-center">or sign up with your account</h1>
-                            
-                            <div className="flex items-center justify-center scale-125 mb-5">
-                              <GoogleLogin
-                                onSuccess={async (credentialResponse) => {
-                                  try {
-                                    const decoded = jwtDecode(credentialResponse.credential);
-                                    const email = decoded.email;
-                                    const name = decoded.name || decoded.given_name || '';
-                                    console.log('Google decoded', decoded);
-                                    const res = await fetch('http://localhost:8000/api/users/oauth/google', {
-                                      method: 'POST',
-                                      headers: { 'Content-Type': 'application/json' },
-                                      body: JSON.stringify({ email, name })
-                                    });
-                                    const data = await res.json();
-                                    if (res.ok) {
-                                      console.log('OAuth response', data);
-                                      navigate('/RidePage');
-                                    } else {
-                                      console.error('OAuth error', data);
-                                      setError(data.error || 'OAuth error');
-                                    }
-                                  } catch (err) {
-                                    console.error('Google login handler error', err);
-                                    setError('Google sign-in failed');
-                                  }
-                                }}
-                                onError={() => setError('Google sign-in failed')}
-                                size="large"
-                              />
-
+                              <div className="flex items-center justify-center scale-100 mb-5">
+                                <button 
+                                    onClick={() => googleLogin()} // 👈 ATTACH THE OAUTH FUNCTION HERE
+                                    disabled={googleLoading} 
+                                    className={`flex items-center justify-center w-full px-6 py-3 border border-gray-300 rounded-xl text-lg font-medium shadow-md transition duration-200 
+                                        ${googleLoading 
+                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                                            : 'bg-white text-gray-700 hover:bg-gray-100'
+                                        }`}
+                                >
+                                    <img 
+                                        src={googleLogo} 
+                                        alt="Google logo" 
+                                        className="w-5 h-5 mr-3" 
+                                    />
+                                    {googleLoading ? 'Signing in with Google...' : 'Sign Up with Google'}
+                                </button>
                             </div>
+                            {/* 5. DISPLAY ERROR MESSAGE FOR GOOGLE LOGIN */}
+                            {error && googleLoading && <div className="text-sm text-red-600">Google Sign-in Error: {error}</div>}
+                           
                             
-                        </form>
+                        </form> 
 
                     </div>
 

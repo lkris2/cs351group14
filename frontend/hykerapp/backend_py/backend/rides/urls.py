@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import root, request_ride, drivers_nearby, accept_ride, users_list, user_login, user_signup
+from .views import root, request_ride, drivers_nearby, accept_ride, users_list, user_login, user_signup, user_oauth_google
 
 urlpatterns = [
     path('', root),
@@ -9,4 +9,5 @@ urlpatterns = [
     path("users/", users_list),
     path("users/login/", user_login),
     path("users/signup/", user_signup),
+    path("users/oauth/google", user_oauth_google),
 ]
