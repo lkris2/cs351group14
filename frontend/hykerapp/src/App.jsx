@@ -11,7 +11,7 @@ import Logout from "./components/logout";
 import { useEffect, useState } from "react";
 import RequestRides from "./RequestRides";
 import RideConfirmation from "./components/rideConfirmation";
-
+import RiderMatchPage from "./components/RideMatchPage";
 
   
 
@@ -50,14 +50,6 @@ export default function App() {
         pickupLocation: { lat: 41.8722, lng: -87.6480 },
         dropoffLocation: { lat: 41.8787, lng: -87.6396 },
     },
-    {
-        id:3,
-        name: "Gargi S",
-        initials: "GS",
-        from: "Michigan Ave",
-        to: "Union Station",
-        pickupLocation: { lat: 41.8916, lng: -87.6244 }
-    }
   ]);
   const addRequest = (newReq) => {
     setRequests(prev => [...prev, newReq]);
@@ -113,6 +105,7 @@ export default function App() {
             // </ProtectedRoute>
           }
         />
+        <Route path="/ride-match" element={<RiderMatchPage/>} />
         <Route path="/logout" element={<Logout/>} />
       </Routes>
     </Router>
