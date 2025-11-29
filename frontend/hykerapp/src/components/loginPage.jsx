@@ -164,7 +164,7 @@ export default function loginPage(){
                                     const data = await res.json();
                                     if (res.ok) {
                                       console.log('OAuth response', data);
-                                      navigate('/RidePage');
+                                      navigate('/find-ride');
                                     } else {
                                       console.error('OAuth error', data);
                                       setError(data.error || 'OAuth error');
