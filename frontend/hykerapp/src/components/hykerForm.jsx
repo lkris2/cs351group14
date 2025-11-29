@@ -86,7 +86,7 @@ export default function HykerForm({ addRequest }) {
             },
         });
 
-        navigate("/request-rides");
+        navigate("/ride-match");
     }
 
   return (

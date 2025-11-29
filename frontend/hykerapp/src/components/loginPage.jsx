@@ -148,7 +148,7 @@ export default function loginPage(){
               </button>
                             <h1 className="m-7 text-center">or sign in with your account</h1>
                             
-                            <div className="flex items-center justify-center scale-125 mb-5">
+                            {/* <div className="flex items-center justify-center scale-125 mb-5">
                               <GoogleLogin
                                 onSuccess={async (credentialResponse) => {
                                   try {
@@ -178,7 +178,7 @@ export default function loginPage(){
                                 size="large"
                               />
 
-                            </div>
+                            </div> */}
                             
                         </form>
 
