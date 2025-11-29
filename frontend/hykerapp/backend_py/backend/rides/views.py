@@ -32,12 +32,26 @@ except Exception as exc:
 
 @api_view(['POST'])
 def request_ride(request):
+
+    # mongo_user_id = request.data.get("mongo_user_id")
+    # if not mongo_user_id:
+    #     return Response(
+    #         {"error": "mongo_user_id is required"},
+    #         status=status.HTTP_400_BAD_REQUEST,
+    #     )
+    
+    # rider, created = Rider.objects.get_or_create(
+    #     mongo_user_id = mongo_user_id,
+    #     defaults={"location": None},
+    # )
+
     rider_id = request.data['rider_id']
     pickup_lat = request.data['pickup_lat']
     pickup_long = request.data['pickup_long']
     drop_lat = request.data['drop_lat']
     drop_long = request.data['drop_long']
 
+    
     rider = Rider.objects.get(id=rider_id)
 
     pickup = Location.objects.create(lat=pickup_lat, long=pickup_long)
@@ -107,6 +121,28 @@ def drivers_nearby(request):
 
     return Response(nearby_drivers[:5]) # closest 5 drivers
 
+@api_view(['GET'])
+def my_rides(request, mongo_user_id):
+    try:
+        rider = Rider.objects.get(mongo_user_id=mongo_user_id)
+    except Rider.DoesNotExist:
+        return Response({"rides": []}, status = 200)
+    
+    rides = RideRequest.objects.filter(rider=rider).select_related("pickup", "dropoff")
+
+    data = [
+        {
+            "id": r.id,
+            "status": r.status,
+            "pickup": {"lat": r.pickup.lat, "long": r.pickup.long},
+            "dropoff": {"lat": r.dropoff.lat, "long": r.dropoff.long},
+        }
+        for r in rides
+    ]
+
+    return Response({"rides": data}, status=200)
+
+
 
 @api_view(['POST'])
 def accept_ride(request):
@@ -138,8 +174,10 @@ def users_list(request):
 def user_login(request):
     if request.method == 'POST':
         body = json.loads(request.body)
+        print(body)
         try:
             user = User.objects.get(email=body['email'], password=body['password'])
+            
             return JsonResponse({"message": "Login successful", "name": user.name})
         except User.DoesNotExist:
             return JsonResponse({"message": "Invalid credentials"}, status=401)

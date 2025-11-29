@@ -8,8 +8,10 @@ class Location(models.Model):
     long = models.FloatField()
 
 class Rider(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -27,5 +29,5 @@ class User(Document):
     name = StringField(max_length=100, required=True)
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
-
+    _id = StringField(max_length=100, required=True)
     meta = {'collection': 'current_users'}
