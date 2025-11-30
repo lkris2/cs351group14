@@ -1,35 +1,43 @@
-from djongo import models
-from django.contrib.auth.models import User
-from django.db import models
-from mongoengine import Document, StringField, EmailField
+from mongoengine import Document, StringField, EmailField, FloatField, ReferenceField, BooleanField, DateTimeField
+from datetime import datetime
 
-class Location(models.Model):
-    lat = models.FloatField()
-    long = models.FloatField()
+class Location(Document):
+    lat = FloatField(required=True)
+    long = FloatField(required=True)
+    created_at = DateTimeField(default=datetime.utcnow)
+    meta = {'collection': 'locations'}
 
-class Rider(models.Model):
-    
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+class Rider(Document):
+    user_id = StringField(required=True, unique=True)  # references User._id
+    name = StringField()
+    location = ReferenceField(Location, null=True)
+    created_at = DateTimeField(default=datetime.utcnow)
+    meta = {'collection': 'riders'}
 
+class Driver(Document):
+    user_id = StringField(required=True, unique=True)  # references User._id
+    name = StringField()
+    vehicle_info = StringField()
+    rating = FloatField(default=0.0)
+    location = ReferenceField(Location, null=True)
+    is_available = BooleanField(default=True)
+    created_at = DateTimeField(default=datetime.utcnow)
+    meta = {'collection': 'drivers'}
 
-class Driver(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
-    is_available = models.BooleanField(default=True)
-
-class RideRequest(models.Model):
-    rider = models.ForeignKey(Rider, on_delete=models.CASCADE)
-    driver = models.ForeignKey(Driver, null=True, blank=True, on_delete=models.SET_NULL)
-    pickup = models.ForeignKey(Location, related_name="pickup", on_delete=models.CASCADE)
-    dropoff = models.ForeignKey(Location, related_name="dropoff", on_delete=models.CASCADE)
-    pickupStr = models.CharField(max_length=20, default="Pick Up Loc")
-    dropOffStr = models.CharField(max_length=20, default="Drop Up Loc")
-    status = models.CharField(max_length=20, default="SEARCHING")  # SEARCHING, ACCEPTED, PICKED_UP, COMPLETED
+class RideRequest(Document):
+    rider_id = StringField(required=True)  # references User._id
+    driver_id = StringField(null=True)     # references User._id
+    pickup = ReferenceField(Location, required=True)
+    dropoff = ReferenceField(Location, required=True)
+    pickup_str = StringField(default="Pick Up Loc")
+    dropoff_str = StringField(default="Drop Off Loc")
+    status = StringField(default="SEARCHING")  # SEARCHING, ACCEPTED, IN_PROGRESS, COMPLETED
+    created_at = DateTimeField(default=datetime.utcnow)
+    meta = {'collection': 'ride_requests'}
 
 class User(Document):
     name = StringField(max_length=100, required=True)
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
-    _id = StringField(max_length=100, required=True)
+    created_at = DateTimeField(default=datetime.utcnow)
     meta = {'collection': 'current_users'}
