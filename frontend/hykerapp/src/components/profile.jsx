@@ -14,22 +14,19 @@ export default function Profile() {
     const [pickerOpen, setPickerOpen] = useState(false);
     const fileInputRef = useRef(null);
 
-    // user state (replace with real data from AuthContext/API later)
     const [user, setUser] = useState({
-        name: "USER'S NAME",
-        username: 'username',
-        email: 'user.email@example.com',
-        rating: 4.9,
-        followers: 34,
-        trips: [
-            { id: 1, date: '2025-11-01', from: 'Downtown', to: 'Uptown', notes: 'Morning commute' },
-            { id: 2, date: '2025-10-21', from: 'Home', to: 'Airport', notes: 'Airport drop-off' }
-        ]
+        name: "New User",
+        username: '',
+        email: '',
+        rating: null,
+        followers: 0,
+        trips: []
     });
-    // rides count derived from trips
     const rides = user.trips.length;
     const [addingTrip, setAddingTrip] = useState(false);
     const [newTrip, setNewTrip] = useState({ date: '', from: '', to: '', notes: '' });
+    const [editingProfile, setEditingProfile] = useState(false);
+    const [editFields, setEditFields] = useState({ name: user.name, username: user.username, email: user.email });
 
     function handleFileChange(e) {
         const f = e.target.files && e.target.files[0];
@@ -45,20 +42,34 @@ export default function Profile() {
         setUser(prev => ({ ...prev, trips: [trip, ...prev.trips] }));
         setNewTrip({ date: '', from: '', to: '', notes: '' });
         setAddingTrip(false);
-        // TODO: persist to backend via API
     }
 
     function handleDeleteTrip(id) {
         setUser(prev => ({ ...prev, trips: prev.trips.filter(t => t.id !== id) }));
-        // TODO: persist deletion to backend
     }
+
+    function handleStartEdit() {
+        setEditFields({ name: user.name, username: user.username, email: user.email });
+        setEditingProfile(true);
+    }
+
+    function handleCancelEdit() {
+        setEditingProfile(false);
+    }
+
+    function handleSaveProfile(e) {
+        e.preventDefault();
+        setUser(prev => ({ ...prev, name: editFields.name, username: editFields.username, email: editFields.email }));
+        setEditingProfile(false);
+    }
+
 
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#4b0226] via-[#7b1742] to-[#f9f2e8] flex flex-col">
             <Navbar/>
-            <div className="w-full max-w-5xl mx-auto mt-8 px-4">
-                <div className="bg-[#f9f2e8] rounded-3xl shadow-2xl overflow-hidden p-6 flex flex-col md:flex-row gap-6 items-center">
-                    {/* left: avatar block */}
+            <div className="flex-1 flex items-center justify-center py-6 md:py-12">
+                <div className="w-full max-w-5xl mx-auto px-4">
+                    <div className="bg-[#f9f2e8] rounded-3xl shadow-2xl overflow-hidden p-6 flex flex-col md:flex-row gap-6 items-center min-h-[420px]">
                     <div className="w-full md:w-1/3 flex flex-col items-center">
                         <div className="relative">
                             <button onClick={() => setPickerOpen(v => !v)} aria-label="Change profile photo" className="rounded-full overflow-hidden border-4 border-white shadow-lg focus:outline-none">
@@ -84,12 +95,28 @@ export default function Profile() {
                                 </div>
                             )}
                         </div>
-                        <div className="text-center mt-4">
-                            <p className="text-md tracking-[0.25em] uppercase text-pink-900/70 mb-0">USER'S NAME</p>
-                            <p className="text-sm text-gray-600">@username</p>
+                        <div className="text-center mt-4 w-full">
+                            {!editingProfile ? (
+                                <>
+                                    <p className="text-md tracking-[0.25em] uppercase text-pink-900/70 mb-0">{user.name}</p>
+                                    <p className="text-sm text-gray-600">@{user.username || 'username'}</p>
+                                    <div className="mt-3">
+                                        <button onClick={handleStartEdit} className="px-3 py-1 bg-pink-700 text-white rounded text-sm">Edit Profile</button>
+                                    </div>
+                                </>
+                            ) : (
+                                <form onSubmit={handleSaveProfile} className="flex flex-col gap-2 items-center">
+                                    <input value={editFields.name} onChange={e => setEditFields(prev => ({ ...prev, name: e.target.value }))} placeholder="Full name" className="p-2 rounded border w-56 text-sm" />
+                                    <input value={editFields.username} onChange={e => setEditFields(prev => ({ ...prev, username: e.target.value }))} placeholder="Username" className="p-2 rounded border w-56 text-sm" />
+                                    <input value={editFields.email} onChange={e => setEditFields(prev => ({ ...prev, email: e.target.value }))} placeholder="Email" className="p-2 rounded border w-56 text-sm" />
+                                    <div className="flex gap-2 mt-2">
+                                        <button type="submit" className="px-3 py-1 bg-pink-700 text-white rounded text-sm">Save</button>
+                                        <button type="button" onClick={handleCancelEdit} className="px-3 py-1 border rounded text-sm">Cancel</button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
                     </div>
-                    {/* right: stats & fun facts */}
                     <div className="w-full md:w-2/3">
                         <h3 className="text-lg font-semibold text-pink-900">Profile Summary</h3>
                         <p className="text-sm text-pink-900/70 mt-2">Short bio or summary goes here. You can show recent rides, preferences, or quick links.</p>
@@ -99,7 +126,7 @@ export default function Profile() {
                                 <div className="text-xs text-pink-900/60">Rides</div>
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-pink-700">{user.rating}</div>
+                                <div className="text-2xl font-bold text-pink-700">{user.rating ?? '—'}</div>
                                 <div className="text-xs text-pink-900/60">Rating</div>
                             </div>
                             <div>
@@ -114,7 +141,6 @@ export default function Profile() {
                             <li>Usually brings snacks for the ride.</li>
                         </ul>
 
-                        {/* Past trips */}
                         <div className="mt-6">
                             <div className="flex items-center justify-between">
                                 <h4 className="text-md font-semibold text-pink-900">Past Trips</h4>
@@ -132,20 +158,24 @@ export default function Profile() {
                             )}
 
                             <div className="mt-4 grid gap-3">
-                                {user.trips.length === 0 && <div className="text-sm text-gray-500">No past trips</div>}
-                                {user.trips.map(trip => (
-                                    <div key={trip.id} className="flex items-start justify-between bg-white/60 p-3 rounded-lg">
-                                        <div>
-                                            <div className="text-sm font-medium text-pink-900">{trip.date} — {trip.from} → {trip.to}</div>
-                                            {trip.notes && <div className="text-xs text-pink-900/70">{trip.notes}</div>}
+                                {user.trips.length === 0 ? (
+                                    <div className="text-sm text-gray-500">You don't have any trips yet — add your first trip with the "Add Trip" button.</div>
+                                ) : (
+                                    user.trips.map(trip => (
+                                        <div key={trip.id} className="flex items-start justify-between bg-white/60 p-3 rounded-lg">
+                                            <div>
+                                                <div className="text-sm font-medium text-pink-900">{trip.date} — {trip.from} → {trip.to}</div>
+                                                {trip.notes && <div className="text-xs text-pink-900/70">{trip.notes}</div>}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <button onClick={() => handleDeleteTrip(trip.id)} className="text-xs text-red-600">Delete</button>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <button onClick={() => handleDeleteTrip(trip.id)} className="text-xs text-red-600">Delete</button>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))
+                                )}
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
