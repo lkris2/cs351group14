@@ -12,7 +12,6 @@ export default function RidePage() {
 
   // Get data passed from RequestCard’s navigate("/ride", { state: { ... } })
   const {
-    riderId = 1,
     pickupLat,
     pickupLong,
     dropLat,
@@ -33,17 +32,17 @@ export default function RidePage() {
     }
 
     async function fetchRoute() {
+      // calling find_route
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/request_ride/", {
-          method: "POST",
+        const params = new URLSearchParams({
+          pickup_lat: pickupLat,
+          pickup_long: pickupLong,
+          drop_lat: dropLat,
+          drop_long: dropLong,
+        });
+        const res = await fetch(`http://127.0.0.1:8000/api/find_route/?${params}`, {
+          method: "GET",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            rider_id: riderId,
-            pickup_lat: pickupLat,
-            pickup_long: pickupLong,
-            drop_lat: dropLat,
-            drop_long: dropLong,
-          }),
         });
 
         console.log("HTTP status:", res.status);
@@ -87,7 +86,7 @@ export default function RidePage() {
     }
 
     fetchRoute();
-  }, [riderId, pickupLat, pickupLong, dropLat, dropLong, navigate]);
+  }, [pickupLat, pickupLong, dropLat, dropLong, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -7,6 +7,7 @@ import InputField from "./inputField.jsx";
 import RiderCircle from "./riderCircle.jsx";
 import trie from "../../backend_py/backend/wordsearch.js";
 import { useNavigate } from "react-router-dom";
+import getRides from "../App.jsx";
 
 export default function HykerForm({ addRequest }) {
   const [pickupLocation, setPickupLocation] = useState("");
@@ -60,17 +61,44 @@ export default function HykerForm({ addRequest }) {
     }
   }
 
-    async function handleSearch() {
-        const pickupCoords = await geocodeAddress(pickupLocation);
-        const dropoffCoords = await geocodeAddress(dropoffLocation);
-        console.log(pickupLocation, dropoffLocation)
-        console.log(pickupCoords, dropoffCoords)
-        if (!pickupCoords || !dropoffCoords) {
-            alert("Could not find those locations. Try a more specific name.");
-            return;
+    async function handleSearch(){
+      const pickupCoords = await geocodeAddress(pickupLocation);
+      const dropoffCoords = await geocodeAddress(dropoffLocation);
+      console.log(pickupLocation, dropoffLocation)
+      console.log(pickupCoords, dropoffCoords)
+      if (!pickupCoords || !dropoffCoords) {
+          alert("Could not find those locations. Try a more specific name.");
+          return;
+      }
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/request_ride/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            rider_id: 1, //local session 
+            pickup_lat: pickupCoords.lat,
+            pickup_long: pickupCoords.lng,
+            drop_lat: dropoffCoords.lat,
+            drop_long: dropoffCoords.lng,
+            pickup_s: pickupLocation,
+            dropoff_s: dropoffLocation,
+          }),
+        });
+
+        console.log("HTTP status:", res.status);
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("Server returned non-OK status", res.status, text);
+          return;
         }
 
-        addRequest({
+      } catch (err) {
+        console.error("Error calling backend:", err);
+      }
+
+      addRequest({
             id: Date.now(),
             name: "You",
             initials: "U",
@@ -85,8 +113,10 @@ export default function HykerForm({ addRequest }) {
             lng: dropoffCoords.lng,
             },
         });
-
-        navigate("/ride-match");
+      const handleRideCreated = async () => {
+        await getRides(); // refetch list
+      };
+      navigate("/ride-match");
     }
 
   return (
