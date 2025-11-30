@@ -14,12 +14,43 @@ export default function Profile() {
     const [pickerOpen, setPickerOpen] = useState(false);
     const fileInputRef = useRef(null);
 
+    // user state (replace with real data from AuthContext/API later)
+    const [user, setUser] = useState({
+        name: "USER'S NAME",
+        username: 'username',
+        email: 'user.email@example.com',
+        rating: 4.9,
+        followers: 34,
+        trips: [
+            { id: 1, date: '2025-11-01', from: 'Downtown', to: 'Uptown', notes: 'Morning commute' },
+            { id: 2, date: '2025-10-21', from: 'Home', to: 'Airport', notes: 'Airport drop-off' }
+        ]
+    });
+    // rides count derived from trips
+    const rides = user.trips.length;
+    const [addingTrip, setAddingTrip] = useState(false);
+    const [newTrip, setNewTrip] = useState({ date: '', from: '', to: '', notes: '' });
+
     function handleFileChange(e) {
         const f = e.target.files && e.target.files[0];
         if (!f) return;
         const url = URL.createObjectURL(f);
         setSelectedImage(url);
         setPickerOpen(false);
+    }
+
+    function handleAddTripSubmit(e) {
+        e.preventDefault();
+        const trip = { ...newTrip, id: Date.now() };
+        setUser(prev => ({ ...prev, trips: [trip, ...prev.trips] }));
+        setNewTrip({ date: '', from: '', to: '', notes: '' });
+        setAddingTrip(false);
+        // TODO: persist to backend via API
+    }
+
+    function handleDeleteTrip(id) {
+        setUser(prev => ({ ...prev, trips: prev.trips.filter(t => t.id !== id) }));
+        // TODO: persist deletion to backend
     }
 
     return(
@@ -64,15 +95,15 @@ export default function Profile() {
                         <p className="text-sm text-pink-900/70 mt-2">Short bio or summary goes here. You can show recent rides, preferences, or quick links.</p>
                         <div className="mt-4 grid grid-cols-3 gap-4 text-center">
                             <div>
-                                <div className="text-2xl font-bold text-pink-700">12</div>
+                                <div className="text-2xl font-bold text-pink-700">{rides}</div>
                                 <div className="text-xs text-pink-900/60">Rides</div>
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-pink-700">4.9</div>
+                                <div className="text-2xl font-bold text-pink-700">{user.rating}</div>
                                 <div className="text-xs text-pink-900/60">Rating</div>
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-pink-700">34</div>
+                                <div className="text-2xl font-bold text-pink-700">{user.followers}</div>
                                 <div className="text-xs text-pink-900/60">Followers</div>
                             </div>
                         </div>
@@ -82,6 +113,39 @@ export default function Profile() {
                             <li>Has visited 12 national parks.</li>
                             <li>Usually brings snacks for the ride.</li>
                         </ul>
+
+                        {/* Past trips */}
+                        <div className="mt-6">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-md font-semibold text-pink-900">Past Trips</h4>
+                                <button onClick={() => setAddingTrip(v => !v)} className="text-sm px-3 py-1 bg-pink-700 text-white rounded">{addingTrip ? 'Cancel' : 'Add Trip'}</button>
+                            </div>
+
+                            {addingTrip && (
+                                <form onSubmit={handleAddTripSubmit} className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <input required value={newTrip.date} onChange={e => setNewTrip(prev => ({ ...prev, date: e.target.value }))} type="date" className="p-2 rounded border" />
+                                    <input required value={newTrip.from} onChange={e => setNewTrip(prev => ({ ...prev, from: e.target.value }))} placeholder="From" className="p-2 rounded border" />
+                                    <input required value={newTrip.to} onChange={e => setNewTrip(prev => ({ ...prev, to: e.target.value }))} placeholder="To" className="p-2 rounded border" />
+                                    <input value={newTrip.notes} onChange={e => setNewTrip(prev => ({ ...prev, notes: e.target.value }))} placeholder="Notes" className="p-2 rounded border" />
+                                    <button type="submit" className="col-span-full md:col-auto px-4 py-2 bg-pink-700 text-white rounded">Save Trip</button>
+                                </form>
+                            )}
+
+                            <div className="mt-4 grid gap-3">
+                                {user.trips.length === 0 && <div className="text-sm text-gray-500">No past trips</div>}
+                                {user.trips.map(trip => (
+                                    <div key={trip.id} className="flex items-start justify-between bg-white/60 p-3 rounded-lg">
+                                        <div>
+                                            <div className="text-sm font-medium text-pink-900">{trip.date} — {trip.from} → {trip.to}</div>
+                                            {trip.notes && <div className="text-xs text-pink-900/70">{trip.notes}</div>}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button onClick={() => handleDeleteTrip(trip.id)} className="text-xs text-red-600">Delete</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
