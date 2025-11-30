@@ -71,12 +71,21 @@ export default function HykerForm({ addRequest }) {
           return;
       }
 
+      // ensure user is logged in and we have the backend user id
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('Please sign in before creating a ride request.');
+        navigate('/login');
+        return;
+      }
+
+      let respBody = {};
       try {
         const res = await fetch("http://127.0.0.1:8000/api/request_ride/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            rider_id: 1, //local session 
+            rider_id: userId,
             pickup_lat: pickupCoords.lat,
             pickup_long: pickupCoords.lng,
             drop_lat: dropoffCoords.lat,
@@ -94,25 +103,34 @@ export default function HykerForm({ addRequest }) {
           return;
         }
 
+        // read response json to get created ride id (if backend returns it)
+        let respBody = {};
+        try {
+          respBody = await res.json();
+        } catch (e) {
+          // ignore parse errors
+        }
+
       } catch (err) {
         console.error("Error calling backend:", err);
       }
 
-      addRequest({
-            id: Date.now(),
-            name: "You",
-            initials: "U",
-            from: pickupLocation,
-            to: dropoffLocation,
-            pickupLocation: {
-            lat: pickupCoords.lat,
-            lng: pickupCoords.lng,
-            },
-            dropoffLocation: {
-            lat: dropoffCoords.lat,
-            lng: dropoffCoords.lng,
-            },
-        });
+      // addRequest({
+      //       // use backend ride id when available, fallback to Date.now()
+      //       id: respBody && respBody.ride_id ? respBody.ride_id : Date.now(),
+      //       name: "You",
+      //       initials: "U",
+      //       from: pickupLocation,
+      //       to: dropoffLocation,
+      //       pickupLocation: {
+      //       lat: pickupCoords.lat,
+      //       lng: pickupCoords.lng,
+      //       },
+      //       dropoffLocation: {
+      //       lat: dropoffCoords.lat,
+      //       lng: dropoffCoords.lng,
+      //       },
+      //   });
       const handleRideCreated = async () => {
         await getRides(); // refetch list
       };

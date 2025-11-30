@@ -48,7 +48,12 @@ export default function loginPage(){
         if (res.status === 200) {
           console.log('Login response', data);
           localStorage.setItem("isLoggedIn", "true");
-          // localStorage.setItem("mongoID", ");
+          // store the backend user id (Mongo _id) so other components can identify the logged-in user
+          if (data.user_id) {
+            localStorage.setItem('userId', data.user_id);
+          } else if (data.mongo_user_id) {
+            localStorage.setItem('userId', data.mongo_user_id);
+          }
 
           setIsLoggedIn(true);
           navigate('/find-ride'); // or any route you want
