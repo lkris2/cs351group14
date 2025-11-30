@@ -59,6 +59,12 @@ export default function Navbar(){
                         Logout
                     </Link>
                 )}
+
+                {isLoggedIn && (
+                    <Link to="/profile" className="hover:underline underline-offset-4 text-lg">
+                        Profile
+                    </Link>
+                )}
             </div>
         </nav>
     )
