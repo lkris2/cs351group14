@@ -1,4 +1,4 @@
-import {useState, useContext, useRef } from "react";
+import {useState, useContext, useRef, useEffect } from "react";
 import Navbar from "./navbar";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
@@ -33,8 +33,18 @@ export default function Profile() {
         if (!f) return;
         const url = URL.createObjectURL(f);
         setSelectedImage(url);
+        try { sessionStorage.setItem('profileAvatar', url); } catch (err) { /* ignore */ }
+        window.dispatchEvent(new Event('profileAvatarChanged'));
         setPickerOpen(false);
     }
+
+    // Ensure the currently selected image (including initial bundled avatar)
+    // is synced to sessionStorage so the navbar can show the face immediately.
+    useEffect(() => {
+        if (!selectedImage) return;
+        try { sessionStorage.setItem('profileAvatar', selectedImage); } catch (err) { /* ignore */ }
+        window.dispatchEvent(new Event('profileAvatarChanged'));
+    }, [selectedImage]);
 
     function handleAddTripSubmit(e) {
         e.preventDefault();
@@ -80,7 +90,7 @@ export default function Profile() {
                                     <div className="text-sm font-medium mb-2">Choose a photo</div>
                                     <div className="grid grid-cols-4 gap-2 max-h-40 overflow-auto">
                                         {imageList.length ? imageList.map((url, i) => (
-                                            <button key={i} onClick={() => { setSelectedImage(url); setPickerOpen(false); }} className="rounded overflow-hidden w-12 h-12">
+                                            <button key={i} onClick={() => { setSelectedImage(url); try { sessionStorage.setItem('profileAvatar', url); } catch (err) {} window.dispatchEvent(new Event('profileAvatarChanged')); setPickerOpen(false); }} className="rounded overflow-hidden w-12 h-12">
                                                 <img src={url} className="w-12 h-12 object-cover" alt={`person-${i}`} />
                                             </button>
                                         )) : (
@@ -89,7 +99,7 @@ export default function Profile() {
                                     </div>
                                     <div className="mt-3 flex gap-2">
                                         <button onClick={() => fileInputRef.current?.click()} className="text-sm px-3 py-1 bg-pink-700 text-white rounded">Upload</button>
-                                        <button onClick={() => { setSelectedImage(imageList[0] || ''); setPickerOpen(false); }} className="text-sm px-3 py-1 border rounded">Reset</button>
+                                        <button onClick={() => { const v = imageList[0] || ''; setSelectedImage(v); try { sessionStorage.setItem('profileAvatar', v); } catch (err) {} window.dispatchEvent(new Event('profileAvatarChanged')); setPickerOpen(false); }} className="text-sm px-3 py-1 border rounded">Reset</button>
                                     </div>
                                     <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                                 </div>
