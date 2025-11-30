@@ -7,7 +7,6 @@ export default function RiderMatchPage() {
 
       <main className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Left: status card */}
           <div className="bg-white/90 rounded-3xl shadow-xl px-8 py-8 md:py-10 border border-pink-100">
             <p className="text-xs uppercase tracking-[0.2em] text-[#ff3ba7] mb-2">
               Matching in progress
@@ -20,7 +19,6 @@ export default function RiderMatchPage() {
               usually takes just a few moments.
             </p>
 
-            {/* fake route summary box */}
             <div className="bg-[#fdf4fa] rounded-2xl px-4 py-3 mb-6 flex flex-col gap-2">
               <div className="flex justify-between text-xs uppercase tracking-wide text-[#58062F]/70">
                 <span>Pickup</span>
@@ -41,7 +39,6 @@ export default function RiderMatchPage() {
               </div>
             </div>
 
-            {/* progress bar */}
             <div className="mb-4">
               <div className="flex justify-between text-xs text-[#58062F]/70 mb-1">
                 <span>Finding drivers</span>
@@ -52,19 +49,15 @@ export default function RiderMatchPage() {
               </div>
             </div>
 
-            {/* hint text */}
             <p className="text-xs text-[#58062F]/60">
               You can keep this page open — we’ll update as soon as a driver
               accepts your request.
             </p>
           </div>
 
-          {/* Right: fun illustration / bubbles */}
           <div className="hidden md:flex items-center justify-center">
             <div className="relative w-full max-w-sm aspect-square">
-              {/* outer glow circle */}
               <div className="absolute inset-6 rounded-full bg-pink-200/40 blur-3xl" />
-              {/* main circle */}
               <div className="relative w-full h-full rounded-[2.5rem] bg-gradient-to-br from-[#4B002A] via-[#6c0f46] to-[#ff3ba7] shadow-2xl flex flex-col items-center justify-center gap-4">
                 <div className="w-20 h-20 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
                   <span className="text-3xl">🚗</span>
@@ -77,7 +70,6 @@ export default function RiderMatchPage() {
                   safe and affordable.
                 </p>
 
-                {/* bouncing dots */}
                 <div className="flex gap-2 mt-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-white/90 animate-bounce" />
                   <span className="w-2.5 h-2.5 rounded-full bg-white/70 animate-[bounce_1.1s_infinite]" />

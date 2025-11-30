@@ -43,10 +43,12 @@ export default function loginPage(){
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+
         const data = await res.json();
         if (res.status === 200) {
           console.log('Login response', data);
           localStorage.setItem("isLoggedIn", "true");
+          // localStorage.setItem("mongoID", ");
 
           setIsLoggedIn(true);
           navigate('/find-ride'); // or any route you want
