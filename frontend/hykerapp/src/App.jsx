@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import RequestRides from "./RequestRides";
 import RideConfirmation from "./components/rideConfirmation";
 import RiderMatchPage from "./components/RideMatchPage";
+import Profile from "./components/profile";
 
   
 
@@ -104,6 +105,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="/"
           element={
