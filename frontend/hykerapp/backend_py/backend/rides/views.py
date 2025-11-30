@@ -50,7 +50,8 @@ def request_ride(request):
     pickup_long = request.data['pickup_long']
     drop_lat = request.data['drop_lat']
     drop_long = request.data['drop_long']
-
+    pickup_s = request.data['pickup_s']
+    dropoff_s = request.data['dropoff_s']
     
     rider = Rider.objects.get(id=rider_id)
 
@@ -60,8 +61,22 @@ def request_ride(request):
     ride = RideRequest.objects.create(
         rider=rider,
         pickup=pickup,
-        dropoff=dropoff
+        dropoff=dropoff,
+        pickupStr =pickup_s,
+        dropOffStr = dropoff_s
     )
+
+
+    # split 
+
+    return Response({"ride_id": ride.id, "status": ride.status})
+
+@api_view(['GET'])
+def find_route(request):
+    pickup_lat = float(request.query_params['pickup_lat'])
+    pickup_long = float(request.query_params['pickup_long'])
+    drop_lat = float(request.query_params['drop_lat'])
+    drop_long = float(request.query_params['drop_long'])
 
     route_coords = []
     if coord_map is not None and graph is not None:
@@ -95,7 +110,7 @@ def request_ride(request):
         except:
             route_coords = []
 
-    return Response({"ride_id": ride.id, "status": ride.status, "route": route_coords})
+    return Response({"route": route_coords})
 
 def distance(lat1, lng1, lat2, lng2):
     return math.sqrt((lat1 - lat2)**2 + (lng1 - lng2)**2)
@@ -143,7 +158,29 @@ def my_rides(request, mongo_user_id):
     return Response({"rides": data}, status=200)
 
 
+# add new call to pull all existing ride requests from db
+@api_view(['GET'])
+def get_rides(request):
+    rides_qs = RideRequest.objects.filter(status="SEARCHING").select_related("rider__user", "pickup", "dropoff")
 
+    rides = []
+    for r in rides_qs:
+        rider_name = getattr(r.rider.user, "username", None) or getattr(r.rider, "id", "Rider")
+        initials = "".join([part[0].upper() for part in (rider_name.split()[:2])]) if rider_name else "U"
+
+        rides.append({
+            "id": r.id,
+            "name": rider_name,
+            "initials": initials,
+            "from": getattr(r, "pickupStr", "") or (f"{r.pickup.lat:.4f},{r.pickup.long:.4f}" if r.pickup else ""),
+            "to": getattr(r, "dropOffStr", "") or (f"{r.dropoff.lat:.4f},{r.dropoff.long:.4f}" if r.dropoff else ""),
+            "pickupLocation": {"lat": r.pickup.lat, "lng": r.pickup.long} if r.pickup else None,
+            "dropoffLocation": {"lat": r.dropoff.lat, "lng": r.dropoff.long} if r.dropoff else None,
+            "status": r.status,
+        })
+
+    return Response(rides, status=200)
+    
 @api_view(['POST'])
 def accept_ride(request):
     ride_id = request.data['ride_id']

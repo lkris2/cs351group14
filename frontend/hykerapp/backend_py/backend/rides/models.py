@@ -23,6 +23,8 @@ class RideRequest(models.Model):
     driver = models.ForeignKey(Driver, null=True, blank=True, on_delete=models.SET_NULL)
     pickup = models.ForeignKey(Location, related_name="pickup", on_delete=models.CASCADE)
     dropoff = models.ForeignKey(Location, related_name="dropoff", on_delete=models.CASCADE)
+    pickupStr = models.CharField(max_length=20, default="Pick Up Loc")
+    dropOffStr = models.CharField(max_length=20, default="Drop Up Loc")
     status = models.CharField(max_length=20, default="SEARCHING")  # SEARCHING, ACCEPTED, PICKED_UP, COMPLETED
 
 class User(Document):
