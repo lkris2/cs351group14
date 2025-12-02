@@ -35,7 +35,7 @@ export default function loginPage(){
       }
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:8000/api/users/signup/', {
+        const res = await fetch('http://localhost:3000/api/users/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
@@ -44,7 +44,9 @@ export default function loginPage(){
         const data = await res.json();
         if (res.status === 201) {
           console.log('User created', data);
-          navigate('/find-ride');
+            try { sessionStorage.setItem('profileName', name); } catch (err) {}
+            try { sessionStorage.setItem('profileEmail', email); } catch (err) {}
+          navigate('/RidePage');
         } else if (res.status === 409) {
           setError('An account with this email already exists. Please login instead.');
         } else if (!res.ok) {
@@ -139,10 +141,10 @@ export default function loginPage(){
                                 onSuccess={async (credentialResponse) => {
                                   try {
                                     const decoded = jwtDecode(credentialResponse.credential);
-                                    const email = decoded.email;
-                                    const name = decoded.name || decoded.given_name || '';
+                                      const email = decoded.email;
+                                      const name = decoded.name || decoded.given_name || '';
                                     console.log('Google decoded', decoded);
-                                    const res = await fetch('http://localhost:8000/api/users/oauth/google', {
+                                    const res = await fetch('http://localhost:3000/api/users/oauth/google', {
                                       method: 'POST',
                                       headers: { 'Content-Type': 'application/json' },
                                       body: JSON.stringify({ email, name })
@@ -150,7 +152,9 @@ export default function loginPage(){
                                     const data = await res.json();
                                     if (res.ok) {
                                       console.log('OAuth response', data);
-                                      navigate('/RidePage');
+                                        try { if (name) sessionStorage.setItem('profileName', name); } catch (err) {}
+                                        try { if (email) sessionStorage.setItem('profileEmail', email); } catch (err) {}
+                                        navigate('/RidePage');
                                     } else {
                                       console.error('OAuth error', data);
                                       setError(data.error || 'OAuth error');

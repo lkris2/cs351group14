@@ -8,6 +8,7 @@ import SignUp from "./signup.jsx";
 import { AuthContext } from "../Authcontext.jsx";
 
 export default function Profile() {
+    const { isLoggedIn } = useContext(AuthContext);
     const imageModules = import.meta.glob('../assets/person*.png', { eager: true, as: 'url' });
     const imageList = Object.values(imageModules || {});
     const [selectedImage, setSelectedImage] = useState(imageList[0] || '');
@@ -46,10 +47,117 @@ export default function Profile() {
         window.dispatchEvent(new Event('profileAvatarChanged'));
     }, [selectedImage]);
 
+    // Load persisted trips from sessionStorage on mount and listen for updates
+    useEffect(() => {
+        const loadTrips = () => {
+            try {
+                const uid = sessionStorage.getItem('userId') || 'anon';
+                const key = `profileTrips:${uid}`;
+                const raw = sessionStorage.getItem(key) || sessionStorage.getItem('profileTrips');
+                if (!raw) return;
+                const arr = JSON.parse(raw);
+                if (Array.isArray(arr)) setUser(prev => ({ ...prev, trips: arr }));
+            } catch (err) {
+                console.warn('Failed to load profileTrips', err);
+            }
+        };
+
+        loadTrips();
+        window.addEventListener('tripsUpdated', loadTrips);
+        return () => window.removeEventListener('tripsUpdated', loadTrips);
+    }, []);
+
+    // Ensure profile name/username are populated when the user is logged in.
+    // Priority: sessionStorage.profileName (from login/signup). If missing,
+    // generate a friendly name and username (persisted to sessionStorage so it
+    // survives navigation within the session).
+    useEffect(() => {
+        if (!isLoggedIn) return;
+
+    let profileName = null;
+    let profileEmail = null;
+    // Prefer namespaced keys per-user to avoid cross-user collisions
+    let userIdKey = null;
+    try { userIdKey = sessionStorage.getItem('userId'); } catch (err) { userIdKey = null; }
+    const nameKey = userIdKey ? `profileName:${userIdKey}` : 'profileName';
+    const emailKey = userIdKey ? `profileEmail:${userIdKey}` : 'profileEmail';
+    const usernameKey = userIdKey ? `profileUsername:${userIdKey}` : 'profileUsername';
+    try { profileName = sessionStorage.getItem(nameKey) || sessionStorage.getItem('profileName'); } catch (err) { profileName = null; }
+    try { profileEmail = sessionStorage.getItem(emailKey) || sessionStorage.getItem('profileEmail'); } catch (err) { profileEmail = null; }
+
+        // helper to create a username base
+        const makeUsername = (nameBase) => {
+            const base = (nameBase.split(' ')[0] || 'user').toLowerCase().replace(/[^a-z0-9]/g, '') || 'user';
+            const rand = Math.floor(1000 + Math.random() * 9000);
+            return `${base}${rand}`;
+        };
+
+    // if we already have a persisted username, use it
+    let persistedUsername = null;
+    try { persistedUsername = sessionStorage.getItem(usernameKey) || sessionStorage.getItem('profileUsername'); } catch (err) { persistedUsername = null; }
+
+        if (profileName) {
+            // use the provided profileName and ensure a username exists
+            const usernameToUse = persistedUsername || makeUsername(profileName);
+            try { sessionStorage.setItem(usernameKey, usernameToUse); sessionStorage.setItem(nameKey, profileName); } catch (err) {}
+            setUser(prev => ({ ...prev, name: profileName, username: usernameToUse }));
+            return;
+        }
+
+            // If profileName isn't available but we have an email, derive from it
+            if (!profileName && profileEmail) {
+                const local = (profileEmail.split('@')[0] || '').replace(/[^a-zA-Z0-9._-]/g, '');
+                if (local) {
+                    const displayName = local.toUpperCase();
+                    const usernameToUse = persistedUsername || local;
+                    try { sessionStorage.setItem('profileName', displayName); sessionStorage.setItem('profileUsername', usernameToUse); } catch (err) {}
+                    setUser(prev => ({ ...prev, name: displayName, username: usernameToUse, email: profileEmail }));
+                    return;
+                }
+            }
+
+        // If no profileName, try to derive something from a stored userId
+        let userId = null;
+        try { userId = sessionStorage.getItem('userId'); } catch (err) { userId = null; }
+
+        if (!persistedUsername) {
+            // generate display name and username
+            let generatedName = null;
+            if (userId) {
+                const tail = userId.slice(-4);
+                generatedName = `User ${tail}`;
+            } else {
+                const rnd = Math.floor(1000 + Math.random() * 9000);
+                generatedName = `User ${rnd}`;
+            }
+            const usernameToUse = makeUsername(generatedName);
+            try { sessionStorage.setItem(nameKey, generatedName); sessionStorage.setItem(usernameKey, usernameToUse); } catch (err) {}
+            setUser(prev => ({ ...prev, name: generatedName, username: usernameToUse }));
+            return;
+        }
+
+        // If we reach here, we had a persisted username but no profileName
+        // (unlikely) — create a display name from the username base.
+        const display = persistedUsername.replace(/\d+$/, '');
+        const finalName = display ? display.charAt(0).toUpperCase() + display.slice(1) : 'User';
+        try { sessionStorage.setItem(nameKey, finalName); } catch (err) {}
+        setUser(prev => ({ ...prev, name: finalName, username: persistedUsername }));
+    }, [isLoggedIn]);
+
     function handleAddTripSubmit(e) {
         e.preventDefault();
         const trip = { ...newTrip, id: Date.now() };
-        setUser(prev => ({ ...prev, trips: [trip, ...prev.trips] }));
+        setUser(prev => {
+            const updatedTrips = [trip, ...prev.trips];
+            const updated = { ...prev, trips: updatedTrips };
+            try {
+                const uid = sessionStorage.getItem('userId') || 'anon';
+                const key = `profileTrips:${uid}`;
+                sessionStorage.setItem(key, JSON.stringify(updatedTrips));
+                window.dispatchEvent(new Event('tripsUpdated'));
+            } catch (err) {}
+            return updated;
+        });
         setNewTrip({ date: '', from: '', to: '', notes: '' });
         setAddingTrip(false);
     }

@@ -47,7 +47,10 @@ export default function loginPage(){
         const data = await res.json();
         if (res.status === 200) {
           console.log('Login response', data);
+          // keep existing localStorage flag (used elsewhere) and also set
+          // sessionStorage flags so AuthContext and profile can read them.
           localStorage.setItem("isLoggedIn", "true");
+          try { sessionStorage.setItem('loggedIn', 'true'); } catch (err) {}
           // store the backend user id (Mongo _id) so other components can identify the logged-in user
           if (data.user_id) {
             sessionStorage.setItem('userId', data.user_id);
@@ -55,6 +58,10 @@ export default function loginPage(){
             sessionStorage.setItem('userId', data.mongo_user_id);
           }
 
+          // If backend returned a display name, save it so profile can pick it up
+            // persist name/email to sessionStorage so profile can pick them up
+            try { if (data.name) sessionStorage.setItem('profileName', data.name); } catch (err) {}
+            try { sessionStorage.setItem('profileEmail', data.email || email); } catch (err) {}
           setIsLoggedIn(true);
           navigate('/find-ride'); // or any route you want
         } else if (res.status === 401) {
