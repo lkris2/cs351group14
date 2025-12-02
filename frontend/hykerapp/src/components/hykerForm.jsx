@@ -126,6 +126,27 @@ export default function HykerForm({ addRequest }) {
         //   // ignore parse errors
         // }
         navigate("/ride-match");
+        // Persist a lightweight trip summary to the rider's profile trips so
+        // the Profile page can show the newly created ride immediately.
+        try {
+          const uid = userId || 'anon';
+          const key = `profileTrips:${uid}`;
+          const stored = sessionStorage.getItem(key);
+          const trips = stored ? JSON.parse(stored) : [];
+          const newTrip = {
+            id: respBody.ride_id || `ride-${Date.now()}`,
+            date: new Date().toISOString().split('T')[0],
+            from: pickupLocation,
+            to: dropoffLocation,
+            notes: '',
+            status: 'requested'
+          };
+          trips.unshift(newTrip);
+          sessionStorage.setItem(key, JSON.stringify(trips));
+          window.dispatchEvent(new Event('tripsUpdated'));
+        } catch (err) {
+          console.warn('Could not persist trip to sessionStorage', err);
+        }
       } catch (err) {
         console.error("Error calling backend:", err);
       }
