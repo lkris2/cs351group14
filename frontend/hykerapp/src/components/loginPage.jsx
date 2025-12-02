@@ -43,10 +43,17 @@ export default function loginPage(){
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+
         const data = await res.json();
         if (res.status === 200) {
           console.log('Login response', data);
           localStorage.setItem("isLoggedIn", "true");
+          // store the backend user id (Mongo _id) so other components can identify the logged-in user
+          if (data.user_id) {
+            sessionStorage.setItem('userId', data.user_id);
+          } else if (data.mongo_user_id) {
+            sessionStorage.setItem('userId', data.mongo_user_id);
+          }
 
           setIsLoggedIn(true);
           navigate('/find-ride'); // or any route you want
@@ -148,7 +155,7 @@ export default function loginPage(){
               </button>
                             <h1 className="m-7 text-center">or sign in with your account</h1>
                             
-                            <div className="flex items-center justify-center scale-125 mb-5">
+                            {/* <div className="flex items-center justify-center scale-125 mb-5">
                               <GoogleLogin
                                 onSuccess={async (credentialResponse) => {
                                   try {
@@ -178,7 +185,7 @@ export default function loginPage(){
                                 size="large"
                               />
 
-                            </div>
+                            </div> */}
                             
                         </form>
 

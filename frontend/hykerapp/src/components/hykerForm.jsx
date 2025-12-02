@@ -7,6 +7,7 @@ import InputField from "./inputField.jsx";
 import RiderCircle from "./riderCircle.jsx";
 import trie from "../../backend_py/backend/wordsearch.js";
 import { useNavigate } from "react-router-dom";
+import getRides from "../App.jsx";
 
 export default function HykerForm({ addRequest }) {
   const [pickupLocation, setPickupLocation] = useState("");
@@ -60,33 +61,78 @@ export default function HykerForm({ addRequest }) {
     }
   }
 
-    async function handleSearch() {
-        const pickupCoords = await geocodeAddress(pickupLocation);
-        const dropoffCoords = await geocodeAddress(dropoffLocation);
-        console.log(pickupLocation, dropoffLocation)
-        console.log(pickupCoords, dropoffCoords)
-        if (!pickupCoords || !dropoffCoords) {
-            alert("Could not find those locations. Try a more specific name.");
-            return;
-        }
+    async function handleSearch(){
+      const pickupCoords = await geocodeAddress(pickupLocation);
+      const dropoffCoords = await geocodeAddress(dropoffLocation);
+      console.log(pickupLocation, dropoffLocation)
+      console.log(pickupCoords, dropoffCoords)
+      if (!pickupCoords || !dropoffCoords) {
+          alert("Could not find those locations. Try a more specific name.");
+          return;
+      }
 
-        addRequest({
-            id: Date.now(),
-            name: "You",
-            initials: "U",
-            from: pickupLocation,
-            to: dropoffLocation,
-            pickupLocation: {
-            lat: pickupCoords.lat,
-            lng: pickupCoords.lng,
-            },
-            dropoffLocation: {
-            lat: dropoffCoords.lat,
-            lng: dropoffCoords.lng,
-            },
+      // ensure user is logged in and we have the backend user id
+      const userId = sessionStorage.getItem('userId');
+      if (!userId) {
+        alert('Please sign in before creating a ride request.');
+        navigate('/login');
+        return;
+      }
+
+      // let respBody = {};
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/request_ride/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            rider_id: userId,
+            pickup_lat: pickupCoords.lat,
+            pickup_long: pickupCoords.lng,
+            drop_lat: dropoffCoords.lat,
+            drop_long: dropoffCoords.lng,
+            pickup_s: pickupLocation,
+            dropoff_s: dropoffLocation,
+          }),
         });
 
-        navigate("/request-rides");
+        console.log("HTTP status:", res.status);
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("Server returned non-OK status", res.status, text);
+          return;
+        }
+
+        // read response json to get created ride id (if backend returns it)
+        let respBody = {};
+        try {
+          respBody = await res.json();
+        } catch (e) {
+          // ignore parse errors
+        }
+        console.log("resp: ", respBody)
+        if (respBody.ride_id){
+          localStorage.setItem("currentRideId", respBody.ride_id)
+          localStorage.setItem("currentPickupSpot", pickupLocation)
+          localStorage.setItem("currentDropoffSpot", dropoffLocation)
+        }
+        else{
+          console.warn("Backend did not return ride_id")
+        }
+
+        // try {
+        //   respBody = await res.json();
+        // } catch (e) {
+        //   // ignore parse errors
+        // }
+        navigate("/ride-match");
+      } catch (err) {
+        console.error("Error calling backend:", err);
+      }
+      // const handleRideCreated = async () => {
+      //   await getRides(); // refetch list
+      // };
+      
     }
 
   return (
