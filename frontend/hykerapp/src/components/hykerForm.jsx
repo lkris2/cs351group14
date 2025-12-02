@@ -72,14 +72,14 @@ export default function HykerForm({ addRequest }) {
       }
 
       // ensure user is logged in and we have the backend user id
-      const userId = localStorage.getItem('userId');
+      const userId = sessionStorage.getItem('userId');
       if (!userId) {
         alert('Please sign in before creating a ride request.');
         navigate('/login');
         return;
       }
 
-      let respBody = {};
+      // let respBody = {};
       try {
         const res = await fetch("http://127.0.0.1:8000/api/request_ride/", {
           method: "POST",
@@ -110,31 +110,29 @@ export default function HykerForm({ addRequest }) {
         } catch (e) {
           // ignore parse errors
         }
+        console.log("resp: ", respBody)
+        if (respBody.ride_id){
+          localStorage.setItem("currentRideId", respBody.ride_id)
+          localStorage.setItem("currentPickupSpot", pickupLocation)
+          localStorage.setItem("currentDropoffSpot", dropoffLocation)
+        }
+        else{
+          console.warn("Backend did not return ride_id")
+        }
 
+        // try {
+        //   respBody = await res.json();
+        // } catch (e) {
+        //   // ignore parse errors
+        // }
+        navigate("/ride-match");
       } catch (err) {
         console.error("Error calling backend:", err);
       }
-
-      // addRequest({
-      //       // use backend ride id when available, fallback to Date.now()
-      //       id: respBody && respBody.ride_id ? respBody.ride_id : Date.now(),
-      //       name: "You",
-      //       initials: "U",
-      //       from: pickupLocation,
-      //       to: dropoffLocation,
-      //       pickupLocation: {
-      //       lat: pickupCoords.lat,
-      //       lng: pickupCoords.lng,
-      //       },
-      //       dropoffLocation: {
-      //       lat: dropoffCoords.lat,
-      //       lng: dropoffCoords.lng,
-      //       },
-      //   });
-      const handleRideCreated = async () => {
-        await getRides(); // refetch list
-      };
-      navigate("/ride-match");
+      // const handleRideCreated = async () => {
+      //   await getRides(); // refetch list
+      // };
+      
     }
 
   return (

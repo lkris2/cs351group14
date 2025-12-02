@@ -7,17 +7,17 @@ import { useNavigate, useNavigation } from "react-router-dom";
 export default function RequestRides({requests}){
 
     const navigate = useNavigate()
-    function handleOfferRide(request) {
-        navigate("/ride", {
-        state: {
-            riderId: 1, // placeholder
-            pickupLat: request.pickupLocation.lat,
-            pickupLong: request.pickupLocation.lng,
-            dropLat: request.dropoffLocation.lat,
-            dropLong: request.dropoffLocation.lng,
-        },
-        });
-    }
+    // function handleOfferRide(request) {
+    //     navigate("/ride", {
+    //     state: {
+    //         riderId: 1, // placeholder
+    //         pickupLat: request.pickupLocation.lat,
+    //         pickupLong: request.pickupLocation.lng,
+    //         dropLat: request.dropoffLocation.lat,
+    //         dropLong: request.dropoffLocation.lng,
+    //     },
+    //     });
+    // }
 
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#fbe9f2] via-[#f7f2ff] to-[#fde4f8] flex flex-col">

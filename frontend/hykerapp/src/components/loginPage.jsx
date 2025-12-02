@@ -50,9 +50,9 @@ export default function loginPage(){
           localStorage.setItem("isLoggedIn", "true");
           // store the backend user id (Mongo _id) so other components can identify the logged-in user
           if (data.user_id) {
-            localStorage.setItem('userId', data.user_id);
+            sessionStorage.setItem('userId', data.user_id);
           } else if (data.mongo_user_id) {
-            localStorage.setItem('userId', data.mongo_user_id);
+            sessionStorage.setItem('userId', data.mongo_user_id);
           }
 
           setIsLoggedIn(true);

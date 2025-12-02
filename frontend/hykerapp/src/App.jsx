@@ -121,7 +121,7 @@ export default function App() {
           }
         />
         <Route
-          path="/ride"
+          path="/ride/:rideId"
           element={
             // <ProtectedRoute>
               <RidePage />

@@ -1,6 +1,53 @@
 import Navbar from "./navbar";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RiderMatchPage() {
+
+  const navigate = useNavigate();
+  const [pickupLabel, setPickupLabel] = useState("Your Pickup Location");
+  const [dropoffLable, setDropoffLabel] = useState("Your Dropoff Location");
+
+  useEffect(() => {
+    const rideId = localStorage.getItem("currentRideId")
+    if(!rideId){
+      console.log("ride ID not fetched")
+      navigate("/")
+      return;
+    }
+
+    const storedPickup = localStorage.getItem("currentPickupSpot");
+    const storedDropoff = localStorage.getItem("currentDropoffSpot");
+    if (storedPickup){
+      setPickupLabel(storedPickup);
+    }
+    if (storedDropoff){
+      setDropoffLabel(storedDropoff);
+    }
+    console.log("going to enter try")
+    const intervalId = setInterval(async () => {
+      try {
+        console.log("entered try")
+        const res = await fetch(`http://127.0.0.1:8000/api/rides/${rideId}/`);
+        const data = await res.json();
+        console.log("Data:", data)
+        if (res.ok) {
+          if (data.status === "ACCEPTED") {
+            clearInterval(intervalId);
+            navigate(`/ride/${rideId}`);
+          }
+        } else {
+          console.error("Error fetching ride:", data.error);
+        }
+      } catch (err) {
+        console.error("Error polling ride status:", err);
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fbe9f2] via-[#f7f2ff] to-[#fde4f8] flex flex-col">
       <Navbar />
