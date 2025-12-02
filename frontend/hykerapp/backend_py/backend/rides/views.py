@@ -6,7 +6,7 @@ from .models import Rider, Driver, Location, RideRequest, User
 import math
 from django.http import HttpResponse, JsonResponse
 from mongoengine import connect
-
+from bson import ObjectId
 # connect(
 #     host=os.environ.get('MONGO_DB')
 # )
@@ -178,7 +178,7 @@ def get_rides(request):
             rider = Rider.objects(user_id=r.rider_id).first()
             rider_name = rider.name if rider else "Unknown Rider"
             initials = "".join([part[0].upper() for part in rider_name.split()[:2]]) if rider_name else "U"
-            print(rider_name)
+            # print(rider_name)
             if r.pickup and r.dropoff:
                 rides.append({
                     "id": str(r.id),
@@ -207,7 +207,7 @@ def accept_ride(request):
         ride_req = RideRequest.objects(id=ObjectId(ride_id)).first()
         if not ride_req:
             return Response({"error": "Ride not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+        print("coming here")
         ride_req.driver_id = driver_id
         ride_req.status = "ACCEPTED"
         ride_req.save()
@@ -218,10 +218,51 @@ def accept_ride(request):
             driver.is_available = False
             driver.save()
         
-        return Response({"status": "ACCEPTED"})
+        return Response({
+            "status": "ACCEPTED",
+            "ride_id": str(ride_req.id)
+        })
     except Exception as e:
         print(f"Error accepting ride: {e}")
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['GET'])
+def get_ride_detail(request, ride_id):
+    try:
+        ride = RideRequest.objects(id=ObjectId(ride_id)).first()
+        if not ride:
+            return Response({"error: Ride is not found"}, status=status.HTTP_404_NOT_FOUND)
+        rider_user = User.objects(id=ride.rider_id).first() if ride.rider_id else None
+        driver_user = User.objects(id=ride.driver_id).first() if ride.driver_id else None
+        data = {
+            "id": str(ride.id),
+            "status": ride.status,
+            "pickup": {
+                "lat": ride.pickup.lat,
+                "long": ride.pickup.long,
+                "label": ride.pickup_str,
+            } if ride.pickup else None,
+            "dropoff": {
+                "lat": ride.dropoff.lat,
+                "long": ride.dropoff.long,
+                "label": ride.dropoff_str,
+            } if ride.dropoff else None,
+            "rider": {
+                "id": ride.rider_id,
+                "name": rider_user.name if rider_user else None,
+                "email": rider_user.email if rider_user else None,
+            } if rider_user else None,
+            "driver": {
+                "id": ride.driver_id,
+                "name": driver_user.name if driver_user else None,
+                "email": driver_user.email if driver_user else None,
+            } if driver_user else None,
+        }
+        return Response(data, status=200)
+    except Exception as e:
+        print(f"Error fetching ride detail: {e}")
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @csrf_exempt
 def users_list(request):

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import root, request_ride, drivers_nearby, accept_ride, users_list, get_rides, user_login, user_signup, find_route
+from .views import root, request_ride, drivers_nearby, accept_ride, users_list, get_rides, user_login, user_signup, find_route, get_ride_detail
 
 urlpatterns = [
     path('', root),
@@ -11,4 +11,5 @@ urlpatterns = [
     path("users/", users_list),
     path("users/login/", user_login),
     path("users/signup/", user_signup),
+    path('rides/<str:ride_id>/', get_ride_detail),
 ]
