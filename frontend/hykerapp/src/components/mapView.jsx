@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet";
+import React, { useEffect, useState} from "react";
+import { MapContainer, TileLayer, Polyline, useMap, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+// import pinkdot from "../assets/pink-dot.png";
 
 function FitBounds({ positions }) {
   const map = useMap();
@@ -12,6 +14,48 @@ function FitBounds({ positions }) {
 
   return null;
 }
+
+// adding geolocation
+// updates position w long and lat
+
+
+const indicatorIcon = L.icon({
+  iconUrl: "../assets/pink-dot.png",  
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+
+const LocationMarker = () => {
+  const [position, setPosition] = useState(null);
+
+    useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Current position:", latitude, longitude);
+      },
+      (error) => {
+        console.error("Error getting position:", error);
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+    );
+
+      return () => { navigator.geolocation.clearWatch(watchId); }; 
+  }, []);
+
+  if (!position) { return null; }
+  
+  return (
+    <>
+      {position && (
+        <Marker
+          position={position}
+          icon={indicatorIcon}
+        />
+      )}
+    </>
+  );
+};
 
 export default function MapView({ path }) {
   const hasPath = Array.isArray(path) && path.length > 0;
@@ -31,6 +75,8 @@ export default function MapView({ path }) {
           <FitBounds positions={positions} />
         </>
       )}
+
+      <LocationMarker />
     </MapContainer>
   );
 }
