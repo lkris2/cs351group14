@@ -15,7 +15,7 @@ export default function RequestCard({ request }) {
 
   const handleOfferRide = async () => {
     // Driver (or client) must be logged in
-    const userId = localStorage.getItem("userId");
+    const userId = sessionStorage.getItem("userId");
     if (!userId) {
       alert("Please log in before offering a ride.");
       navigate("/login");
