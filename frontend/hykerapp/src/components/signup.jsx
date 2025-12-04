@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useContext} from "react";
 import Navbar from "./navbar";
 import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleLogin } from "@react-oauth/google";
@@ -8,10 +8,12 @@ import { Link } from 'react-router-dom';
 import SignUp from "./signup.jsx";
 import googleLogo from '../assets/googleLogo.svg.webp';
 
+import { AuthContext } from "../Authcontext.jsx";
+
 export default function loginPage(){
     const [coverEyes, setCoverEyes] = useState(false);
     const navigate = useNavigate();
-
+    const { setIsLoggedIn } = useContext(AuthContext);
     const [isHovering, setIsHovering] = useState(false);
 
     const [name, setName] = useState('');
@@ -20,7 +22,8 @@ export default function loginPage(){
     const [googleLoading, setGoogleLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    
+    const [isLoggedIn] = useState(false); // Track login status
+
     const handleMouseEnter = () => {
       setIsHovering(true);
     };
@@ -38,7 +41,7 @@ export default function loginPage(){
       }
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:3000/api/users/signup', {
+        const res = await fetch('http://localhost:8000/api/users/signup/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
@@ -49,7 +52,10 @@ export default function loginPage(){
           console.log('User created', data);
             try { sessionStorage.setItem('profileName', name); } catch (err) {}
             try { sessionStorage.setItem('profileEmail', email); } catch (err) {}
-          navigate('/RidePage');
+            localStorage.setItem("isLoggedIn", "true");
+            try { sessionStorage.setItem('loggedIn', 'true'); } catch (err) {}
+            setIsLoggedIn(true);
+          navigate('/find-ride');
         } else if (res.status === 409) {
           setError('An account with this email already exists. Please login instead.');
         } else if (!res.ok) {
@@ -90,7 +96,10 @@ export default function loginPage(){
             
             if (res.ok) {
                 console.log('OAuth response', data);
-                navigate('/RidePage'); 
+                localStorage.setItem("isLoggedIn", "true");
+                try { sessionStorage.setItem('loggedIn', 'true'); } catch (err) {}
+                setIsLoggedIn(true);
+                navigate('/find-ride'); 
             } else {
                 console.error('OAuth error', data);
                 setError(data.error || 'OAuth error');
@@ -200,7 +209,7 @@ export default function loginPage(){
                                       const email = decoded.email;
                                       const name = decoded.name || decoded.given_name || '';
                                     console.log('Google decoded', decoded);
-                                    const res = await fetch('http://localhost:3000/api/users/oauth/google', {
+                                    const res = await fetch('http://localhost:8000/api/users/oauth/google', {
                                       method: 'POST',
                                       headers: { 'Content-Type': 'application/json' },
                                       body: JSON.stringify({ email, name })
@@ -210,7 +219,10 @@ export default function loginPage(){
                                       console.log('OAuth response', data);
                                         try { if (name) sessionStorage.setItem('profileName', name); } catch (err) {}
                                         try { if (email) sessionStorage.setItem('profileEmail', email); } catch (err) {}
-                                        navigate('/RidePage');
+                                        localStorage.setItem("isLoggedIn", "true");
+                                       try { sessionStorage.setItem('loggedIn', 'true'); } catch (err) {}
+                                       setIsLoggedIn(true);
+                                        navigate('/find-ride');
                                     } else {
                                       console.error('OAuth error', data);
                                       setError(data.error || 'OAuth error');

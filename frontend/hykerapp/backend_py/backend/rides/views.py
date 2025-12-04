@@ -305,7 +305,6 @@ def user_signup(request):
     if request.method == 'POST':
         try:
             body = json.loads(request.body)
-            print('DEBUG: Received OAuth request body:', body)
             email = body.get('email')
             name = body.get('name')
             password = body.get('password')

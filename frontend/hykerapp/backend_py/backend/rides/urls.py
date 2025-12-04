@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import root, request_ride, drivers_nearby, accept_ride, users_list, get_rides, user_login, user_signup, find_route, get_ride_detail
+# from .oauth_views import user_oauth_google
+from .views import root, user_oauth_google, request_ride, drivers_nearby, accept_ride, users_list, get_rides, user_login, user_signup, find_route, get_ride_detail
 
 urlpatterns = [
     path('', root),
+    path("users/oauth/google", user_oauth_google),
     path("request_ride/", request_ride),
     path("find_route/", find_route),
     path("get_rides/", get_rides),
